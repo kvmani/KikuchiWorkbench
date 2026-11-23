@@ -259,3 +259,15 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Offline install path verified (Linux): `tools/make_wheelhouse.py` built 70 wheels (199 MB, sha256 manifest, no
   extras); a fresh venv installed them with `pip install --no-index` and `kwb demo` passed. Windows and the `gui`
   extra still to be checked offline on the lab machine (docs/lab_handoff.md item 7).
+- CI run 14 (commit 335991f): **success** on all four jobs (ubuntu/windows × py3.11/3.12) — tests, lint, demos.
+
+### State of play (end of Entry 14)
+
+Done and evidenced here: scaffolding, conventions (validated against EMsoft EMEBSD, NCC 0.99996), importers
+(structural + kikuchipy samples + one real public Oxford `.ebsp`), CIF/xtal, master import/cache, EMsoft adapter
+(mock-tested), indexing core with dictionary cache, refinement and shared PC calibration, phase decision, exports,
+CLI, GUI (offscreen, Linux + Windows CI), synthetic Ni/Cu benchmark (interim), real Al–Si interoperability run,
+offline install (Linux). **Blocked on lab hardware/data** (see docs/lab_handoff.md): native Windows EMsoft run
+(release gate), CUDA parity, EDAX/TSL and lab Oxford exports, Windows workstation GUI, Windows offline install.
+Next candidates without hardware: hexagonal map rendering, phase-margin calibration study design, dynamical-master
+version of the Ni/Cu benchmark once the reference Cu master exists.
