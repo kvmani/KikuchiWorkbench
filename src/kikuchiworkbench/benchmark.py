@@ -213,7 +213,7 @@ def conditions(mode: str) -> list[dict]:
     return c
 
 
-def _run(cond, paths, cache_dir, n_side, seed, thresholds):
+def _run(cond, paths, cache_dir, n_side, seed, thresholds, refine=False):
     names = cond["phases"]
     dict_names = names if len(set(names)) == len(names) else [names[0], names[0] + "_copy"]
     dict_masters = [load_master(paths[(nm, cond.get("dict_route", "dictionary"))], phase_name=dn)
@@ -237,6 +237,7 @@ def _run(cond, paths, cache_dir, n_side, seed, thresholds):
         matching={"backend": "cpu", "cache_dictionary": True, "cache_dir": str(cache_dir),
                   "top_k": 3},
         decision=thresholds,
+        refinement={"enabled": True, "maxeval": 300} if refine else {},
     )
     t0 = time.perf_counter()
     r = run_indexing(cfg, scan=scan, masters=dict_masters, export=False)
@@ -244,7 +245,7 @@ def _run(cond, paths, cache_dir, n_side, seed, thresholds):
 
 
 def run_benchmark(out_dir: str | Path, mode: str = "quick", n_side: int | None = None,
-                  cache_dir: str | Path | None = None, log=print) -> dict:
+                  cache_dir: str | Path | None = None, log=print, refine: bool = False) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     n_side = n_side or (8 if mode == "quick" else 14)
@@ -258,7 +259,7 @@ def run_benchmark(out_dir: str | Path, mode: str = "quick", n_side: int | None =
     # ---- 1) threshold selection on the development baseline
     log("[benchmark] development run (threshold selection)")
     provisional = {"min_score": 0.10, "ambiguity_margin": 0.0, "provenance": "dev selection run"}
-    r_dev, t_dev, _ = _run(conds[0], paths, cache, n_side, seeds["dev"], provisional)
+    r_dev, t_dev, _ = _run(conds[0], paths, cache, n_side, seeds["dev"], provisional, refine)
     margins = np.round(np.arange(0.0, 0.0501, 0.001), 4)
     rows = coverage_vs_error(r_dev, t_dev, margins)
     sel = select_threshold(rows)
@@ -275,7 +276,7 @@ def run_benchmark(out_dir: str | Path, mode: str = "quick", n_side: int | None =
     results = {}
     for cond in conds:
         log(f"[benchmark] held-out: {cond['name']}")
-        r, truth, dt = _run(cond, paths, cache, n_side, seeds["heldout"], frozen_read)
+        r, truth, dt = _run(cond, paths, cache, n_side, seeds["heldout"], frozen_read, refine)
         ev = evaluate(r, truth)
         ev["wall_time_s"] = round(dt, 2)
         ev["n_dictionary"] = r.n_dictionary
@@ -289,7 +290,8 @@ def run_benchmark(out_dir: str | Path, mode: str = "quick", n_side: int | None =
                     f.write(f"{row['ambiguity_margin']},{row['coverage']:.4f},{row['error_among_indexed']:.4f}\n")
 
     summary = {
-        "mode": mode, "n_points_per_scan": n_side**2, "seeds": seeds, "thresholds": frozen_read,
+        "mode": mode, "refinement": "equal-budget Nelder-Mead, trust region = grid step, maxeval 300"
+        if refine else "none (dictionary grid only)", "n_points_per_scan": n_side**2, "seeds": seeds, "thresholds": frozen_read,
         "routes": ROUTES, "lattice_A": {"Ni": A_NI, "Cu": A_CU},
         "software": software_versions(), "hardware": hardware_info(),
         "masters": "kinematical (kikuchipy simulator); NOT dynamical EMsoft",
@@ -305,7 +307,7 @@ def render_report(s: dict) -> str:
     lines = [
         "# Controlled cubic discrimination benchmark (synthetic, kinematical)",
         "",
-        f"Mode `{s['mode']}`, {s['n_points_per_scan']} points per scan, seeds {s['seeds']}. "
+        f"Mode `{s['mode']}`, refinement: {s['refinement']}, {s['n_points_per_scan']} points per scan, seeds {s['seeds']}. "
         f"Masters: {s['masters']}. Dictionary route {s['routes']['dictionary']}, target route "
         f"{s['routes']['target']} (model mismatch).",
         "",

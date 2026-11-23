@@ -167,3 +167,21 @@ def test_dictionary_cache_hit_gives_identical_results(tmp_path, ni):
                                              px_size=d.px_size, sample_tilt=d.sample_tilt))
     r3 = run_indexing(_cfg([path], matching=mc), scan=moved, masters=[m], export=False)
     assert any("miss" in e["message"] for e in r3.manifest.events if e["kind"] == "dictionary_cache")
+
+
+def test_equal_budget_refinement(ni, tmp_path):
+    path, m = ni
+    m2 = load_master(path, phase_name="Ni_b")
+    scan, truth = make_synthetic_scan([m], SyntheticSpec(nrows=2, ncols=3, seed=21))
+    base = run_indexing(_cfg([path]), scan=scan, masters=[m], export=False)
+    cfg = _cfg([path, path], refinement={"enabled": True, "maxeval": 150})
+    r = run_indexing(cfg, scan=scan, masters=[m, m2], export=False)
+    rec = r.manifest.parameters["refinement"]
+    assert rec["equal_budget"] and rec["budget"]["trust_region_deg"] == RES
+    assert set(rec["mean_evaluations_per_pattern"]) == {"Ni", "Ni_b"}
+    mis0 = misorientation_deg(base.best_quaternion[0], truth["quaternion"], m.phase.point_group)
+    mis1 = misorientation_deg(r.best_quaternion[0], truth["quaternion"], m.phase.point_group)
+    assert np.median(mis1) < np.median(mis0) and np.median(mis1) < 1.0
+    assert np.all(r.per_phase_best[:, 0] > r.dictionary_best[:, 0])
+    # identical phases with identical budgets stay exactly tied -> ambiguous
+    assert np.all(r.decision.tie)

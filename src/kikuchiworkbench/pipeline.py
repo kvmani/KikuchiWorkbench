@@ -57,6 +57,7 @@ class IndexingConfig:
     matching: dict = field(default_factory=dict)
     decision: dict = field(default_factory=dict)
     output: dict = field(default_factory=dict)
+    refinement: dict = field(default_factory=dict)  # {"enabled": bool, **RefinementBudget}
     roi: list | None = None  # [row0, row1, col0, col1] (half-open) on the map grid
     allow_placeholder_geometry: bool = False
 
@@ -123,6 +124,7 @@ class IndexingResult:
     n_dictionary: list[int]
     signal: np.ndarray
     point_index: np.ndarray  # indices into the full scan (ROI support)
+    dictionary_best: np.ndarray | None = None  # per-phase best dictionary NCC before refinement
     manifest: RunManifest | None = None
     job_dir: str | None = None
     timings: dict = field(default_factory=dict)
@@ -414,9 +416,34 @@ def run_indexing(
     if hasattr(matcher.backend, "peak_memory_bytes"):
         manifest.results["gpu_peak_memory_bytes"] = matcher.backend.peak_memory_bytes()
 
+    # ---- optional equal-budget refinement
+    per_phase_best = np.stack([t.scores[:, 0] for t in topks], axis=1)
+    topk_q = [_quaternions(r, t.valid_index()) for r, t in zip(rotations, topks, strict=True)]
+    dictionary_best = per_phase_best.copy()
+    rcfg = dict(config.refinement or {})
+    if rcfg.pop("enabled", False):
+        from .indexing.refinement import RefinementBudget, refine_all
+
+        if pre.bin_factor != 1:
+            events("warning", "Refinement projects at the binned detector resolution.")
+        budget = RefinementBudget(**rcfg)
+        t0 = time.perf_counter()
+        pats = np.empty((n,) + pre.output_shape, dtype=np.float32)
+        for i0 in range(0, n, chunk_e):
+            pats[i0:i0 + chunk_e] = pre.apply_experimental(work_scan.get_patterns(i0, i0 + chunk_e))
+        ref = refine_all(topk_q, pats, det, masters, mask, budget, spec.resolution_deg,
+                         cancel=job.cancel_token if job is not None else None,
+                         progress=lambda f, msg: progress(0.95 + 0.0 * f, msg))
+        for p in range(len(masters)):
+            topk_q[p][:, 0] = ref["quaternion"][p]
+            topks[p].scores[:, 0] = ref["score"][p]
+        per_phase_best = np.stack(ref["score"], axis=1)
+        timings["refinement_s"] = time.perf_counter() - t0
+        manifest.parameters["refinement"] = ref["record"]
+        events("refinement", f"Refined all phases with equal budget {ref['record']['budget']}")
+
     # ---- decision
     policy = DecisionPolicy(**config.decision) if config.decision else DecisionPolicy()
-    per_phase_best = np.stack([t.scores[:, 0] for t in topks], axis=1)
     decision = decide(per_phase_best, policy, signal=sig, valid=work_scan.valid)
     manifest.thresholds = policy.to_dict()
     result = IndexingResult(
@@ -426,10 +453,11 @@ def run_indexing(
         per_phase_best=per_phase_best,
         topk_scores=[t.scores for t in topks],
         topk_index=[t.valid_index() for t in topks],
-        topk_quaternion=[_quaternions(r, t.valid_index()) for r, t in zip(rotations, topks, strict=True)],
+        topk_quaternion=topk_q,
         n_dictionary=[int(r.size) for r in rotations],
         signal=sig,
         point_index=idx,
+        dictionary_best=dictionary_best,
         manifest=manifest,
         context={"scan": work_scan, "masters": masters, "detector": proj_det, "preprocessor": pre},
         job_dir=str(job.path) if job else None,

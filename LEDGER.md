@@ -171,3 +171,18 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   it now reports all 36 pixels ambiguous, true phase scores higher for 24/36.
 - Docs: `docs/quickstart.md`, `docs/vendor_export.md` (unverified against lab exports). `pytest -q` → 106 passed.
 - Next: orientation refinement with equal budget per phase; rerun the benchmark.
+
+## 2026-11-23 — Entry 9: Equal-budget refinement; benchmark report
+
+- `indexing/refinement.py`: kikuchipy NCC refinement per phase from each phase's best dictionary candidate(s)
+  with an identical budget (method, trust region = grid step by default, rtol, maxeval, number of starts), fixed
+  shared PC; recorded in the manifest (`parameters.refinement`, mean evaluations per phase, time). Config:
+  `refinement: {enabled: true, ...}`; pre-refinement scores kept (`per_phase_best_dictionary` in results.h5).
+  Test: refinement lowers orientation error below 1° and identical phases stay exactly tied.
+- Benchmark `--refine` run: `benchmarks/results/full_refined_2026-11-23/`. Summary in `docs/benchmark_report.md`:
+  forced-choice Ni/Cu accuracy 93% (matched fine route), 88% (matched coarse), 63% (mismatched); true-phase
+  margins ~0.001–0.003 NCC; frozen threshold → all ambiguous, no confident wrong labels (≤ 2/196 isolated points in
+  two conditions). The dev 1%-error target was not achievable.
+- Roadmap 5.8 done; 5.4/5.5 done for the synthetic kinematical case (dynamical + real data still open).
+- Next: README overhaul + docs index; parameter reference; CUDA parity script (to run on a GPU machine); then
+  real-data interoperability prep (Al–Si public data download script, roadmap 5.7).

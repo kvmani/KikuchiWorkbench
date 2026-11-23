@@ -151,6 +151,8 @@ def export_h5(result, scan, path: str | os.PathLike) -> str:
                   "tie", "low_signal", "best_phase_any"):
             g[k] = np.asarray(getattr(d, k))
         h["per_phase_best"] = result.per_phase_best
+        if getattr(result, "dictionary_best", None) is not None:
+            h["per_phase_best_dictionary"] = result.dictionary_best  # before refinement
         h["signal"] = result.signal
         h["x"], h["y"] = scan.x, scan.y
         rr, cc = scan.map_indices()

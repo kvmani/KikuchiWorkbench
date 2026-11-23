@@ -66,9 +66,9 @@ until evidence from a suitable machine is recorded.
 - [~] 5.1 Optional PyTorch CUDA matcher; Auto/CPU/GPU selection; automatic fallback and batch shrink recorded in manifest.
 - [x] 5.2 Synthetic two-phase cubic fixture generator (Ni a=3.524 Å vs Cu a=3.615 Å FCC Fm-3m), held-out off-grid orientations, seeds recorded.
 - [x] 5.3 Identical-master control (must report ambiguity), lattice-parameter sweep, PC offset, noise, binning, angular-step stress tests.
-- [~] 5.4 Benchmark scripts producing confusion matrices (incl. ambiguous/unindexed), per-phase recall, coverage vs error, misorientation error, margins, compute cost.
-- [~] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
-- [ ] 5.8 Equal-budget orientation refinement per phase (needed: grid error swamps the Ni/Cu score difference).
+- [x] 5.4 Benchmark scripts producing confusion matrices (incl. ambiguous/unindexed), per-phase recall, coverage vs error, misorientation error, margins, compute cost.
+- [x] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
+- [x] 5.8 Equal-budget orientation refinement per phase (needed: grid error swamps the Ni/Cu score difference).
 - [ ] 5.6 **[HW]** Measured CPU/GPU parity, throughput, peak RAM/VRAM on a 4 GB CUDA GPU.
 - [ ] 5.7 **[HW/data]** Real-data interoperability: public Oxford Al–Si `.ebsp` + EMsoft Al/Si masters; TSL scan.
 
@@ -97,5 +97,5 @@ until evidence from a suitable machine is recorded.
 - [ ] Load-to-export evidence for Oxford and EDAX/TSL **[data]**
 - [~] CPU cloud demo
 - [ ] Measured GPU/CPU parity **[HW]**
-- [ ] Synthetic cubic and real-data benchmark reports
+- [~] Synthetic cubic and real-data benchmark reports (synthetic kinematical interim report done)
 - [ ] Quick start, vendor export instructions, benchmark reproduction scripts
