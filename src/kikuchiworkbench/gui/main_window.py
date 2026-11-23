@@ -43,6 +43,13 @@ from ..errors import WorkbenchError
 from .images import to_pixmap
 from .workers import Worker, start_worker
 
+
+def QApplication_platform() -> str:  # noqa: N802
+    from PySide6.QtGui import QGuiApplication
+
+    return QGuiApplication.platformName()
+
+
 STEPS = ["1. Open a scan", "2. Candidate phases", "3. Masters", "4. Detector geometry",
          "5. Build & match", "6. Inspect & export"]
 
@@ -955,6 +962,10 @@ class MainWindow(QMainWindow):
         bexp = QPushButton("Export…")
         bexp.clicked.connect(lambda: self.export_results())
         row.addWidget(bexp)
+        brep = QPushButton("Report")
+        brep.setToolTip("Write report.md and a self-contained report.html into the job folder and open it")
+        brep.clicked.connect(lambda: self.make_report())
+        row.addWidget(brep)
         row.addStretch(1)
         lay.addLayout(row)
         self.counts_label = QLabel("")
@@ -1070,6 +1081,21 @@ class MainWindow(QMainWindow):
             f"Point {i} (row {r}, col {c}): {LABEL_NAMES[int(d.label[i])]}, best NCC {d.best_score[i]:.4f}, "
             f"phase margin {'n/a (single phase)' if np.isnan(d.margin[i]) else f'{d.margin[i]:.4f}'}, "
             f"signal {self.result.signal[i]:.2f}")
+
+    def make_report(self, open_it: bool = True):
+        if self.result is None or not self.result.job_dir:
+            self.append_log("Run indexing first; the report is built from the job folder.")
+            return None
+        from ..report import write_report
+
+        files = write_report(self.result.job_dir)
+        self.append_log(f"Report written: {files['html']}")
+        if open_it and self.isVisible() and QApplication_platform() != "offscreen":
+            from PySide6.QtCore import QUrl
+            from PySide6.QtGui import QDesktopServices
+
+            QDesktopServices.openUrl(QUrl.fromLocalFile(files["html"]))
+        return files
 
     def export_results(self, out_dir: str | None = None):
         from ..export import export_csv, export_h5, export_maps

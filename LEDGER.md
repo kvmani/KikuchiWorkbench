@@ -326,3 +326,7 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
 - 8.3 Interactive ROI done: drag a rectangle (rubber band) on the scan map or the result map to set the ROI
   fields; result-map rectangles are translated back to full-scan rows/cols (`roi_origin` in the result context);
   clicks still select pixels. GUI test drives mouse events: drag → ROI [2,7,1,5] → 20-point run.
+- 8.4 Run report done: `report.py` builds `report.md` + self-contained `report.html` (maps embedded as data
+  URIs) from the job's manifest, results CSV and maps; written automatically after `run_indexing_job`, via
+  `kwb report JOB` and the GUI "Report" button. Report files stay in job folders (never in Git). Checked
+  visually on the Al–Si GUI job (local artifact `~/kwb_review_artifacts/review/alsi_run_report.html`).

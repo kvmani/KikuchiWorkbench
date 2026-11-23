@@ -68,6 +68,8 @@ def test_gui_workflow(app, tmp_path):
     win.report_margin.setValue(0.2)  # single phase: margin is NaN so labels stay
     files = win.export_results(str(tmp_path / "export"))
     assert os.path.exists(files["table_csv"]) and (tmp_path / "export" / "manifest.json").exists()
+    files = win.make_report()
+    assert os.path.exists(files["html"])
     win.compare_geometry(0)
     assert win.geo_res.pixmap() is not None
     win.calibrate_geometry(n_points=4, resolution_deg=6.0)

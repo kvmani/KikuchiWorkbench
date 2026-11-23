@@ -183,6 +183,14 @@ def cmd_project(a) -> int:
     return 0
 
 
+def cmd_report(a) -> int:
+    from .report import write_report
+
+    files = write_report(a.job)
+    print(f"Report: {files['html']}\n        {files['markdown']}")
+    return 0
+
+
 def cmd_presets(a) -> int:
     from .presets import PRESETS
 
@@ -322,6 +330,10 @@ def build_parser() -> argparse.ArgumentParser:
     prun.add_argument("--preset", choices=["quick", "standard", "phase_study"])
     prun.add_argument("--quiet", action="store_true")
     pj.set_defaults(fn=cmd_project)
+
+    rp = sub.add_parser("report", help="write report.md and report.html for a job folder")
+    rp.add_argument("job")
+    rp.set_defaults(fn=cmd_report)
 
     pr = sub.add_parser("presets", help="list indexing presets")
     pr.set_defaults(fn=cmd_presets)

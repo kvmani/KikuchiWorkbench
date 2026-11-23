@@ -528,4 +528,11 @@ def run_indexing_job(config: IndexingConfig, jobs_root: str | os.PathLike, liste
     (job.path / "config.json").write_text(json.dumps(config.to_dict(), indent=2, default=str))
     job.log(f"KikuchiWorkbench {__version__}: indexing job started")
     result = job.run(lambda j: run_indexing(config, job=j))
+    if (config.output or {}).get("report", True):
+        from .report import write_report
+
+        try:
+            write_report(job.path)
+        except Exception as e:  # a report failure must not invalidate a completed run
+            job.log(f"Report could not be written: {e}")
     return job, result
