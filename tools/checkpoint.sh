@@ -11,7 +11,7 @@ Claude-Session: https://claude.ai/code/session_011oMNbFgKPXgg7QeRZ94JA1"
 fi
 push() {
   local n=0
-  until git push -q -u origin "$1"; do
+  until git push -q origin "$1"; do
     n=$((n+1)); [ $n -ge 4 ] && return 1; sleep $((2**n))
   done
 }

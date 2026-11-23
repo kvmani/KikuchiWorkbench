@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kikuchiworkbench"
+version = "0.1.0.dev0"
+description = "Master-pattern-based EBSD dictionary indexing workbench (GUI + headless CLI)"
+readme = "README.md"
+requires-python = ">=3.10"
+# Licence for this repository is an open decision (see docs/THIRD_PARTY.md).
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "h5py>=3.9",
+    "matplotlib>=3.8",
+    "kikuchipy>=0.14,<0.15",
+    "orix>=0.15,<0.16",
+    "diffpy.structure>=3.1",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+gui = ["PySide6>=6.6"]
+cuda = ["torch>=2.2"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+kwb = "kikuchiworkbench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kikuchiworkbench = ["data/*", "data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m 'not emsoft and not cuda and not realdata'"
+markers = [
+    "emsoft: requires EMsoft executables and an OpenCL device",
+    "cuda: requires PyTorch with a CUDA device",
+    "gui: requires PySide6 (offscreen platform is used)",
+    "realdata: requires real vendor scans supplied via KWB_REALDATA_DIR",
+    "slow: longer-running benchmark-style tests",
+]
+filterwarnings = [
+    "ignore::SyntaxWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]

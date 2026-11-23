@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+# Generated caches, job folders and large data stay out of Git
+kwb_cache/
+kwb_jobs/
+jobs/
+cache/
+*.h5oina
+*.ebsp
+*.up1
+*.up2
+*.oh5
+/data/
+/outputs/
+benchmarks/results/*/
+!benchmarks/results/.gitkeep

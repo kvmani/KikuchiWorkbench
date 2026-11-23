@@ -19,3 +19,21 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Blocker (roadmap 3.7, release gate): native Windows 11 EMsoft + OpenCL cannot run in this container.
   Continuing with master import and the headless CPU demo, as AGENTS.md directs.
 - Next: Phase 0 scaffolding.
+
+## 2026-11-23 — Entry 2: Scaffolding, conventions, importers
+
+- Package `src/kikuchiworkbench` with `pyproject.toml` (console script `kwb` declared; CLI to come), `.gitignore`.
+- `conventions.py` + `docs/conventions.md`: internal Bruker PC; explicit TSL/Oxford/EMsoft(4/5) conversions.
+  Tests use an asymmetric, off-centre, non-square geometry and cross-check against kikuchipy 0.14.2.
+- `manifest.py` (schema 1.0), `provenance.py` (sha256, software versions, hardware), `errors.py` (actionable advice).
+- `io/detect.py`: structural detection (HDF5 `Manufacturer`, incl. EDAX's leading-space keys; UP header; `.ebsp`
+  version), pattern-free rejection (`.ang/.ctf/.osc/.cpr`, pattern-free H5OINA/EDAX/EMsoft) with export advice.
+- `io/readers.py` → `ScanData` (read-only patterns, grid, coordinates, valid mask, detector, geometry source):
+  H5OINA (prefers `Unprocessed Patterns`), `.ebsp` (+ companion H5OINA geometry), EDAX H5EBSD (own reader, square +
+  hexagonal), UP1/UP2 v1/v3 (incl. hexagonal), EMsoft EBSD, kikuchipy h5ebsd, project fixture format (with truth).
+- Evidence: `pytest -q` → 45 passed (Linux, Python 3.13, kikuchipy 0.14.2, orix 0.15.0); `ruff check` clean.
+- Limitations: H5OINA/EDAX tests use **synthetic structural files**, not real exports. kikuchipy's bundled
+  EDAX H5 sample stores PC = 0 (flagged as missing). kikuchipy's bundled hexagonal `.up2` has 10 patterns for a
+  3×3 hex header, inconsistent with the assumed `ncols_even = ncols_odd − 1`; we refuse it as a grid and allow
+  `grid_type="points"`. Hexagonal layout assumption must be verified on a real OIM export (roadmap 2.7).
+- Next: master import/verification + cache (3.1, 3.2), then CIF validation (3.3).

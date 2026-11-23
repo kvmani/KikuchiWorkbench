@@ -14,28 +14,28 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 0 — Project scaffolding
 
-- [ ] 0.1 Python package `kikuchiworkbench` (src layout), `pyproject.toml`, console script `kwb`.
-- [ ] 0.2 Pinned dependency ranges for kikuchipy, orix, h5py, numpy, PySide6 (optional `gui` extra), torch (optional `cuda` extra); record versions actually tested in the ledger.
-- [ ] 0.3 Default test suite (`pytest`) runs offline with no OpenCL/CUDA; integration tests behind markers (`emsoft`, `cuda`, `gui`, `realdata`).
+- [x] 0.1 Python package `kikuchiworkbench` (src layout), `pyproject.toml`, console script `kwb`.
+- [~] 0.2 Pinned dependency ranges for kikuchipy, orix, h5py, numpy, PySide6 (optional `gui` extra), torch (optional `cuda` extra); record versions actually tested in the ledger.
+- [x] 0.3 Default test suite (`pytest`) runs offline with no OpenCL/CUDA; integration tests behind markers (`emsoft`, `cuda`, `gui`, `realdata`).
 - [ ] 0.4 CI workflow: Linux + Windows CPU runners, lint + unit tests + headless demo smoke test.
-- [ ] 0.5 `.gitignore` excludes caches, job folders, large scans and generated masters.
+- [x] 0.5 `.gitignore` excludes caches, job folders, large scans and generated masters.
 - [ ] 0.6 Third-party licence and attribution notes (`docs/THIRD_PARTY.md`); repository licence left as an open decision.
 
 ## Phase 1 — Conventions and data model (feasibility & formats, milestone 1)
 
-- [ ] 1.1 `docs/conventions.md`: crystal and sample frames, active/passive rotation, Bunge Euler, detector pixel axes, PC conventions (internal = Bruker/kikuchipy; EDAX/TSL, Oxford, EMsoft conversions), units, binning, crop, scan order, hexagonal grids.
-- [ ] 1.2 `conventions` module: PC conversion between vendors with round-trip tests and asymmetric/off-centre fixtures that expose sign, transpose and mirror errors.
-- [ ] 1.3 Scan data model: read-only pattern store, scan coordinates (square + hexagonal), missing points, detector geometry, metadata provenance.
-- [ ] 1.4 Versioned run manifest schema (JSON) with inputs, checksums, conventions, parameters, software, hardware, thresholds, fallbacks, exports.
+- [x] 1.1 `docs/conventions.md`: crystal and sample frames, active/passive rotation, Bunge Euler, detector pixel axes, PC conventions (internal = Bruker/kikuchipy; EDAX/TSL, Oxford, EMsoft conversions), units, binning, crop, scan order, hexagonal grids.
+- [x] 1.2 `conventions` module: PC conversion between vendors with round-trip tests and asymmetric/off-centre fixtures that expose sign, transpose and mirror errors.
+- [x] 1.3 Scan data model: read-only pattern store, scan coordinates (square + hexagonal), missing points, detector geometry, metadata provenance.
+- [x] 1.4 Versioned run manifest schema (JSON) with inputs, checksums, conventions, parameters, software, hardware, thresholds, fallbacks, exports.
 
 ## Phase 2 — Importers (milestone 1)
 
-- [ ] 2.1 Format detection by file structure and version (not extension only).
-- [ ] 2.2 Oxford H5OINA (prefer raw over processed dataset), Oxford `.ebsp` (uncompressed) + companion/user geometry.
-- [ ] 2.3 EDAX/TSL H5EBSD / `.oh5`, `.up1`/`.up2` with user-supplied map dimensions/geometry; hexagonal grids.
-- [ ] 2.4 EMsoft simulated EBSD HDF5 and project fixture format (known geometry, orientations, phases, coordinates).
-- [ ] 2.5 Actionable rejection of pattern-free inputs (`.ang`, `.ctf`, pattern-free HDF5) with export instructions.
-- [ ] 2.6 Per-vendor file checks (structure fingerprint, dims, bit depth, scan order) with tests on synthetic structural fixtures.
+- [x] 2.1 Format detection by file structure and version (not extension only).
+- [~] 2.2 Oxford H5OINA (prefer raw over processed dataset), Oxford `.ebsp` (uncompressed) + companion/user geometry.
+- [~] 2.3 EDAX/TSL H5EBSD / `.oh5`, `.up1`/`.up2` with user-supplied map dimensions/geometry; hexagonal grids.
+- [x] 2.4 EMsoft simulated EBSD HDF5 and project fixture format (known geometry, orientations, phases, coordinates).
+- [x] 2.5 Actionable rejection of pattern-free inputs (`.ang`, `.ctf`, pattern-free HDF5) with export instructions.
+- [~] 2.6 Per-vendor file checks (structure fingerprint, dims, bit depth, scan order) with tests on synthetic structural fixtures.
 - [ ] 2.7 **[HW/data]** Verify against real representative Oxford and EDAX/TSL exports; publish supported-versions matrix.
 
 ## Phase 3 — Master patterns and crystals (milestone 1–2)
