@@ -64,7 +64,12 @@ def test_run_with_mock(tmp_path, ni_model, install):
     assert info.space_group == 225
     # job-local EMsoft config; user's config untouched
     cfg = plan.config_home / ".config" / "EMsoft" / "EMsoftConfig.json"
-    assert str(plan.work_dir.resolve()) in cfg.read_text()
+    import json
+
+    data = json.loads(cfg.read_text())
+    assert Path(data["EMdatapathname"]) == plan.work_dir.resolve()
+    assert Path(data["EMXtalFolderpathname"]) == plan.work_dir.resolve()
+    assert data["EMsoftpathname"] == "/opt/EMsoft"  # copied from the base config
 
 
 def test_mc_failure_not_promoted(tmp_path, ni_model, install, monkeypatch):
