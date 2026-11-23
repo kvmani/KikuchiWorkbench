@@ -186,3 +186,19 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Roadmap 5.8 done; 5.4/5.5 done for the synthetic kinematical case (dynamical + real data still open).
 - Next: README overhaul + docs index; parameter reference; CUDA parity script (to run on a GPU machine); then
   real-data interoperability prep (Al–Si public data download script, roadmap 5.7).
+
+## 2026-11-23 — Entry 10: CI green on Windows; docs; parity script; public data fetch
+
+- CI runs 4–6 (commits 09cd742, c34c97a, 070991d): **success** on ubuntu-latest and windows-latest, Python 3.11 and
+  3.12 — default test suite incl. offscreen GUI tests and both CLI demos. First evidence that the core, job
+  folders, subprocess launch (mock EMsoft) and the Qt GUI (offscreen) work on Windows (Server runner, not a
+  Windows 11 workstation with a display).
+- `benchmarks/gpu_cpu_parity.py` (CPU vs CUDA scores, best-index agreement, near ties, time, peak RSS/VRAM,
+  optional VRAM cap to exercise batch shrinking/fallback) and `tests/test_cuda.py` (`-m cuda`). Here the GPU leg
+  is recorded as not run (no CUDA). 5.6 remains open until run on a CUDA machine.
+- `benchmarks/fetch_public_data.py`: Zenodo download with md5 verification (Al–Si Oxford zip 968 MB, EMsoft Ni
+  master 305 MB, CC-BY-4.0) into a data folder outside Git. Download in progress (~0.4 MB/s).
+- Docs: README rewritten (status, verified platforms), `docs/parameters.md` (config keys, preprocessing steps,
+  CLI, outputs), `docs/troubleshooting.md`.
+- Next: when data arrive — real Oxford `.ebsp` load-to-export check on an ROI with EMsoft Al/Si masters (5.7),
+  and Ni reference-master projection comparison (dynamical vs kinematical).

@@ -88,7 +88,7 @@ until evidence from a suitable machine is recorded.
 - [~] 7.1 Beginner quick start (bundled example, offline).
 - [~] 7.2 Vendor export instructions (Oxford AZtec, EDAX OIM/APEX).
 - [ ] 7.3 Native Windows EMsoft CIF-to-master tutorial (after 3.7).
-- [ ] 7.4 Advanced parameter reference, CLI reproduction guide, troubleshooting.
+- [x] 7.4 Advanced parameter reference, CLI reproduction guide, troubleshooting.
 - [ ] 7.5 Benchmark report with validated platforms, file variants and limitations.
 
 ## Release-candidate gate (from AGENTS.md)
