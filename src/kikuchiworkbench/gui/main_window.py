@@ -611,6 +611,11 @@ class MainWindow(QMainWindow):
         self.amb_margin.setRange(0, 0.5)
         self.amb_margin.setSingleStep(0.001)
         self.amb_margin.setValue(0.005)
+        self.preset = QComboBox()
+        self.preset.addItems(["(custom)", "quick", "standard", "phase_study"])
+        self.preset.currentTextChanged.connect(self.apply_preset)
+        self.preset_label = QLabel("")
+        self.preset_label.setWordWrap(True)
         self.use_roi = QCheckBox("Index a region of interest only")
         roi_row = QHBoxLayout()
         self.roi_spins = []
@@ -625,6 +630,8 @@ class MainWindow(QMainWindow):
         self.bin2 = QCheckBox("Bin patterns ×2 (faster)")
         self.refine = QCheckBox("Refine orientations (equal budget per phase)")
         self.cache_dict = QCheckBox("Cache dictionaries")
+        form.addRow("Preset", self.preset)
+        form.addRow(self.preset_label)
         form.addRow("Angular resolution", self.resolution)
         form.addRow("Compute device", self.backend)
         form.addRow("Unindexed below NCC", self.min_score)
@@ -649,6 +656,24 @@ class MainWindow(QMainWindow):
         lay.addStretch(1)
         return w
 
+    def apply_preset(self, name: str):
+        """Set the step-5 widgets from a preset; widgets stay editable afterwards."""
+        from ..presets import PRESETS
+
+        if name not in PRESETS:
+            self.preset_label.setText("")
+            return
+        p = PRESETS[name]
+        self.resolution.setValue(p["sampling"]["resolution_deg"])
+        self.bin2.setChecked(any(st["op"] == "bin" for st in p["preprocessing"]))
+        self.refine.setChecked(bool(p["refinement"].get("enabled")))
+        self.cache_dict.setChecked(bool(p["matching"].get("cache_dictionary")))
+        note = p["description"]
+        if p["calibration"].get("enabled"):
+            note += " Run the PC calibration in step 4 first."
+        self.preset_label.setText(note)
+        self.append_log(f"Preset applied: {name}")
+
     def _config(self):
         from ..indexing.preprocessing import DEFAULT_PIPELINE
         from ..pipeline import IndexingConfig, PhaseSpec
@@ -671,18 +696,25 @@ class MainWindow(QMainWindow):
     def estimate(self):
         from orix.crystal_map import Phase
 
-        from ..indexing.sampling import estimate_count, estimate_resources
-
         if self.scan is None or not self.phases:
             self.estimate_label.setText("Load a scan and at least one phase first.")
             return None
-        counts = {p["name"]: estimate_count(Phase(space_group=p["info"].space_group).point_group,
-                                            self.resolution.value()) for p in self.phases}
-        px = int(np.prod(self.scan.pattern_shape))
-        est = estimate_resources(self.scan.n_points, counts, px, 2000, 2048)
-        d = est.to_dict()
-        self.estimate_label.setText(f"Orientations per phase: {counts}; peak RAM ≈ {d['peak_ram_GB']} GB; "
-                                    f"dictionary on disk if cached ≈ {d['dictionary_disk_GB_if_cached']} GB")
+        from ..presets import launch_check
+
+        pgs = {p["name"]: Phase(space_group=p["info"].space_group).point_group for p in self.phases}
+        n = self.scan.n_points
+        if self.use_roi.isChecked():
+            r0, r1, c0, c1 = (sb.value() for sb in self.roi_spins)
+            n = max(0, r1 - r0) * max(0, c1 - c0)
+        px = int(np.prod(self.scan.pattern_shape)) // (4 if self.bin2.isChecked() else 1)
+        chk = launch_check(n, px, pgs, self.resolution.value(), refine=self.refine.isChecked(),
+                           cached=False)
+        d = chk.to_dict()
+        d["n_orientations"] = chk.n_orientations
+        text = "Estimate: " + chk.summary()
+        if chk.warnings:
+            text += "\nWARNING: " + "\nWARNING: ".join(chk.warnings)
+        self.estimate_label.setText(text)
         return d
 
     def run_indexing(self):

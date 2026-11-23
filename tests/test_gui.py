@@ -41,7 +41,13 @@ def test_gui_workflow(app, tmp_path):
     assert len(win.phases) == 1 and "Geometry source: file" in win.scan_info.toPlainText()
     assert win.raw_preview.pixmap() is not None and not win.raw_preview.pixmap().isNull()
 
+    win.preset.setCurrentText("phase_study")
+    assert win.refine.isChecked() and win.bin2.isChecked() and win.resolution.value() == 2.5
+    win.preset.setCurrentText("quick")
+    assert not win.refine.isChecked() and win.resolution.value() == 5.0
+    win.bin2.setChecked(False)
     est = win.estimate()
+    assert "Estimate:" in win.estimate_label.text()
     assert est["n_orientations"]["Ni"] > 0
     win.resolution.setValue(6.0)
     win.use_roi.setChecked(True)

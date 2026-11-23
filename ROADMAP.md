@@ -95,7 +95,7 @@ until evidence from a suitable machine is recorded.
 
 Order chosen so later items reuse earlier ones (presets and project files feed the batch queue and reports).
 
-- [ ] 8.1 (B6) **Presets** — "quick look", "standard", "phase study": grid, binning, refinement, calibration;
+- [x] 8.1 (B6) **Presets** — "quick look", "standard", "phase study": grid, binning, refinement, calibration;
   resource check warns on RAM/time before launch. CLI `--preset`, GUI preset selector.
 - [ ] 8.2 (B1) **Project files** — `.kwbproj` JSON (scan + load options, phases, geometry/calibration, settings,
   run history with job folders). Save/open in GUI, `kwb project` CLI, round-trip tests.

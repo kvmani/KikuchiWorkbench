@@ -153,11 +153,19 @@ def _summarise(job, result) -> None:
 def cmd_index(a) -> int:
     from .pipeline import IndexingConfig, run_indexing_job
 
-    cfg = IndexingConfig.from_file(a.config)
+    cfg = IndexingConfig.from_file(a.config, preset=a.preset)
     if a.backend:
         cfg.matching["backend"] = a.backend
     job, result = run_indexing_job(cfg, a.jobs, listener=_progress_printer(a.quiet))
     _summarise(job, result)
+    return 0
+
+
+def cmd_presets(a) -> int:
+    from .presets import PRESETS
+
+    for name, p in PRESETS.items():
+        print(f"{name:12s} {p['description']}")
     return 0
 
 
@@ -263,6 +271,8 @@ def build_parser() -> argparse.ArgumentParser:
     i.add_argument("config")
     i.add_argument("--jobs", default="kwb_jobs")
     i.add_argument("--backend", choices=["auto", "cpu", "gpu"])
+    i.add_argument("--preset", choices=["quick", "standard", "phase_study"],
+                   help="base settings; values in the config file override them")
     i.add_argument("--quiet", action="store_true")
     i.set_defaults(fn=cmd_index)
 
@@ -279,6 +289,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     g = sub.add_parser("gui", help="start the desktop GUI")
     g.set_defaults(fn=lambda a: __import__("kikuchiworkbench.gui.main_window", fromlist=["main"]).main([]))
+
+    pr = sub.add_parser("presets", help="list indexing presets")
+    pr.set_defaults(fn=cmd_presets)
 
     e = sub.add_parser("emsoft", help="EMsoft simulation jobs")
     esub = e.add_subparsers(dest="emsoft_cmd", required=True)

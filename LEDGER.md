@@ -315,3 +315,7 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
 - Added ROADMAP Phase 8 (8.1–8.10) covering all ten ease-of-use features in dependency order: presets → project
   files → interactive ROI → run report → phase library → geometry wizard → batch queue → comparison view →
   reader plug-ins → Windows installer (hardware-gated).
+- 8.1 Presets done: `presets.py` ("quick", "standard", "phase_study"; explicit config values override; preset
+  name recorded in config/manifest), `launch_check` (RAM vs available, rough time from measured throughput,
+  warnings > 70% RAM / > 1 h / huge dictionaries), `kwb index --preset`, `kwb presets`, GUI preset selector and
+  estimate with warnings. Tests: tests/test_presets.py + GUI test.

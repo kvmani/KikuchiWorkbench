@@ -60,11 +60,15 @@ class IndexingConfig:
     refinement: dict = field(default_factory=dict)  # {"enabled": bool, **RefinementBudget}
     calibration: dict = field(default_factory=dict)  # {"enabled": bool, "phase": int, "n_points": int, ...}
     roi: list | None = None  # [row0, row1, col0, col1] (half-open) on the map grid
+    preset: str | None = None  # name of the preset applied under explicit settings (recorded)
     allow_placeholder_geometry: bool = False
 
     @classmethod
-    def from_dict(cls, d: dict, base_dir: str | os.PathLike | None = None) -> IndexingConfig:
-        d = copy.deepcopy(d)
+    def from_dict(cls, d: dict, base_dir: str | os.PathLike | None = None,
+                  preset: str | None = None) -> IndexingConfig:
+        from .presets import apply_preset
+
+        d = apply_preset(d, preset or d.get("preset"))
         base = Path(base_dir) if base_dir else None
 
         def resolve(p):
@@ -91,7 +95,7 @@ class IndexingConfig:
         return cls(scan=scan, phases=phases, **d)
 
     @classmethod
-    def from_file(cls, path: str | os.PathLike) -> IndexingConfig:
+    def from_file(cls, path: str | os.PathLike, preset: str | None = None) -> IndexingConfig:
         p = Path(path)
         text = p.read_text()
         if p.suffix.lower() in (".yaml", ".yml"):
@@ -100,7 +104,7 @@ class IndexingConfig:
             data = yaml.safe_load(text)
         else:
             data = json.loads(text)
-        return cls.from_dict(data, base_dir=p.parent)
+        return cls.from_dict(data, base_dir=p.parent, preset=preset)
 
     def to_dict(self) -> dict:
         d = asdict(self)
