@@ -106,7 +106,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   kinematical flag, provenance); add to project in one click; prune cache.
 - [x] 8.6 (B4) **Geometry wizard** — kinematical band-line overlay on the measured pattern, live update while
   editing PC/tilt, residual and NCC readout.
-- [ ] 8.7 (B7) **Batch queue** — queue several scans/ROIs/projects, run sequentially in a worker, resume after
+- [x] 8.7 (B7) **Batch queue** — queue several scans/ROIs/projects, run sequentially in a worker, resume after
   restart (queue file), per-item status. CLI `kwb batch QUEUE`, GUI queue panel.
 - [ ] 8.8 (B8) **Comparison view** — vendor orientations/phases vs workbench: disorientation map, phase
   agreement/confusion table, exported in the report.

@@ -186,3 +186,27 @@ def test_gui_phase_library(app, tmp_path, kp_data_dir):
     dlg.add_selected()
     assert [p["name"] for p in win.phases] == ["NiLib"]
     win.close()
+
+
+def test_gui_batch_panel(app, tmp_path, kp_data_dir):
+    import yaml
+
+    from kikuchiworkbench.io.readers import write_fixture
+    from kikuchiworkbench.masters.importer import load_master
+    from kikuchiworkbench.synthetic import SyntheticSpec, make_synthetic_scan
+
+    mp = os.path.join(kp_data_dir, "emsoft_ebsd_master_pattern", "ni_mc_mp_20kv_uint8_gzip_opts9.h5")
+    scan, truth = make_synthetic_scan([load_master(mp)], SyntheticSpec(nrows=2, ncols=2))
+    fx = write_fixture(tmp_path / "s.h5", scan, truth)
+    cfg = tmp_path / "c.yaml"
+    cfg.write_text(yaml.safe_dump({"scan": str(fx), "phases": [mp], "sampling": {"resolution_deg": 6}}))
+    win = MainWindow(jobs_root=str(tmp_path / "jobs"))
+    dlg = win.open_batch(show=False)
+    dlg.add_path(str(cfg))
+    dlg.add_path(str(cfg))
+    assert dlg.table.rowCount() == 2
+    dlg.run()
+    wait_idle(app, win)
+    items = dlg.refresh()
+    assert [it.status for it in items] == ["completed", "completed"]
+    win.close()

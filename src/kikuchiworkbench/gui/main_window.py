@@ -189,6 +189,12 @@ class MainWindow(QMainWindow):
             act = QAction(label, self)
             act.triggered.connect(lambda checked=False, f=fn: f())
             fm.addAction(act)
+        tm = self.menuBar().addMenu("&Tools")
+        for label, fn in (("Batch queue…", lambda: self.open_batch()),
+                          ("Phase library…", lambda: self.open_library())):
+            act = QAction(label, self)
+            act.triggered.connect(lambda checked=False, f=fn: f())
+            tm.addAction(act)
         self.append_log(f"KikuchiWorkbench {__version__}. Jobs folder: {self.jobs_root}")
 
     # ------------------------------------------------------------------ infra
@@ -607,6 +613,85 @@ class MainWindow(QMainWindow):
         blink.clicked.connect(lambda: link())
         refresh()
         dlg.library, dlg.table, dlg.search, dlg.add_selected, dlg.refresh = lib, table, search, add_selected, refresh
+        if show:
+            dlg.show()
+        return dlg
+
+    def open_batch(self, queue_path: str | None = None, show: bool = True):
+        """Batch queue panel: add configs/projects, run them sequentially in a worker, watch statuses."""
+        from PySide6.QtCore import QTimer
+        from PySide6.QtWidgets import QDialog
+
+        from ..batch import BatchQueue
+
+        qpath = Path(queue_path) if queue_path else self.jobs_root / "batch_queue.json"
+        dlg = QDialog(self)
+        dlg.setWindowTitle(f"Batch queue — {qpath}")
+        dlg.resize(1000, 420)
+        lay = QVBoxLayout(dlg)
+        table = QTableWidget(0, 6)
+        table.setHorizontalHeaderLabels(["Id", "Item", "Kind", "Status", "Counts", "Message / job"])
+        lay.addWidget(table, 1)
+        row = QHBoxLayout()
+        badd = QPushButton("Add config or project…")
+        bcur = QPushButton("Add current project")
+        brun = QPushButton("Run queue")
+        bretry = QPushButton("Retry failed")
+        bcancel = QPushButton("Cancel")
+        for b in (badd, bcur, brun, bretry, bcancel):
+            row.addWidget(b)
+        lay.addLayout(row)
+
+        def refresh():
+            q = BatchQueue(qpath) if qpath.exists() else None
+            items = q.items if q else []
+            table.setRowCount(len(items))
+            for i, it in enumerate(items):
+                vals = [it.id, it.label, it.kind, it.status, str(it.counts or ""), it.message or (it.job_dir or "")]
+                for j, v in enumerate(vals):
+                    table.setItem(i, j, QTableWidgetItem(v))
+            table.resizeColumnsToContents()
+            return items
+
+        def add_path(path):
+            BatchQueue(qpath).add(path)
+            refresh()
+
+        def add_dialog():
+            path, _ = QFileDialog.getOpenFileName(dlg, "Add to batch", "",
+                                                  "Projects and configs (*.kwbproj *.yaml *.yml *.json)")
+            if path:
+                add_path(path)
+
+        def add_current():
+            if self.project is None or not self.project.path:
+                self.append_log("Save the project first (File → Save project as…).")
+                return
+            self.save_project()
+            add_path(self.project.path)
+
+        def run():
+            def job(worker):
+                q = BatchQueue(qpath)
+                return q.run(self.jobs_root, listener=lambda f, m: worker.report(f, m), cancel=worker.cancel_token)
+
+            self.run_in_worker(job, lambda counts: (self.append_log(f"Batch finished: {counts}"), refresh()),
+                               "Batch queue")
+
+        def retry():
+            BatchQueue(qpath).retry_failed()
+            refresh()
+
+        badd.clicked.connect(lambda: add_dialog())
+        bcur.clicked.connect(lambda: add_current())
+        brun.clicked.connect(lambda: run())
+        bretry.clicked.connect(lambda: retry())
+        bcancel.clicked.connect(lambda: self.cancel_job())
+        timer = QTimer(dlg)
+        timer.timeout.connect(refresh)
+        timer.start(1000)
+        refresh()
+        dlg.queue_path, dlg.table, dlg.refresh, dlg.add_path, dlg.run = qpath, table, refresh, add_path, run
         if show:
             dlg.show()
         return dlg

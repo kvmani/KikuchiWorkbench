@@ -342,3 +342,8 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   `()`); (2) a scan-mean static background erased patterns in tiny subsets (1 point → all zeros). Subsets < 200
   points now use the parent scan's mean background; < 10 points without a parent skip the step (recorded).
   Arrays in scan metadata are excluded from manifests and fixtures. Tests added for both.
+- 8.7 Batch queue done: `batch.py` (JSON queue of configs/projects with per-item preset and ROI; status saved
+  after every change; items left `running` by a crash resume as `pending`; failures recorded with traceback in
+  the job folder; project items get their run appended), `kwb batch add|run|status|retry`, GUI Tools → Batch
+  queue panel (worker run, live table, cancel, retry). Tests: mixed good/bad/project queue, crash-resume, CLI,
+  GUI panel.

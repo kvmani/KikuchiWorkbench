@@ -212,6 +212,30 @@ def cmd_library(a) -> int:
     return 0
 
 
+def cmd_batch(a) -> int:
+    from .batch import BatchQueue
+
+    q = BatchQueue(a.queue)
+    if a.batch_cmd == "add":
+        for item in a.items:
+            it = q.add(item, preset=a.preset, roi=a.roi)
+            print(f"queued {it.id} {it.kind} {it.path}")
+    elif a.batch_cmd == "retry":
+        print(f"{q.retry_failed()} item(s) re-queued")
+    elif a.batch_cmd == "run":
+        def on_item(it):
+            print(f"[{it.status:9s}] {it.id} {it.label} {it.message} {it.job_dir or ''}", flush=True)
+
+        counts = q.run(a.jobs, listener=_progress_printer(True), on_item=on_item)
+        print(f"Batch finished: {counts}")
+        return 0 if counts.get("failed", 0) == 0 else 1
+    if a.batch_cmd in ("status", "add", "retry"):
+        for it in q.items:
+            print(f"{it.id} {it.status:9s} {it.kind:7s} {it.label:20s} {it.counts or ''} {it.message}")
+        print(q.counts())
+    return 0
+
+
 def cmd_report(a) -> int:
     from .report import write_report
 
@@ -375,6 +399,20 @@ def build_parser() -> argparse.ArgumentParser:
     lbs.add_parser("clean", help="remove incomplete cache entries and stale links")
     lbs.add_parser("usage", help="cache disk usage per kind (GB)")
     lb.set_defaults(fn=cmd_library)
+
+    bt = sub.add_parser("batch", help="resumable batch queue of configs/projects")
+    bts = bt.add_subparsers(dest="batch_cmd", required=True)
+    ba = bts.add_parser("add")
+    ba.add_argument("queue")
+    ba.add_argument("items", nargs="+", help="config files (.yaml/.json) or projects (.kwbproj)")
+    ba.add_argument("--preset", choices=["quick", "standard", "phase_study"])
+    ba.add_argument("--roi", type=int, nargs=4)
+    brun = bts.add_parser("run")
+    brun.add_argument("queue")
+    brun.add_argument("--jobs", default="kwb_jobs")
+    for name in ("status", "retry"):
+        bts.add_parser(name).add_argument("queue")
+    bt.set_defaults(fn=cmd_batch)
 
     rp = sub.add_parser("report", help="write report.md and report.html for a job folder")
     rp.add_argument("job")
