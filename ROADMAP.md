@@ -112,7 +112,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   agreement/confusion table, exported in the report.
 - [x] 8.9 (B10) **Reader plug-ins** — registry (Python entry points `kikuchiworkbench.readers`) so new formats plug
   into detection and `load_scan`; first plug-ins: NORDIF and Bruker h5ebsd via kikuchipy.
-- [ ] 8.10 (B9) **Offline Windows installer** **[HW]** — PyInstaller spec + build script and docs prepared here;
+- [~] 8.10 (B9) **Offline Windows installer** **[HW]** — PyInstaller spec + build script and docs prepared here;
   build and signing on Windows after the native EMsoft gate.
 
 ## Release-candidate gate (from AGENTS.md)

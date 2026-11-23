@@ -359,3 +359,9 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   broken third-party plug-ins only warn. Built-ins: NORDIF (tested on kikuchipy's NORDIF sample; PC flagged
   missing) and Bruker h5ebsd (via kikuchipy; unverified on real exports). `kwb readers`. Tests: NORDIF load,
   custom plug-in registration, CLI.
+- 8.10 Windows installer prepared (partial, **[HW]**): `packaging/kikuchiworkbench.spec` (PyInstaller one-folder
+  bundle with GUI + `kwb`), `packaging/build_bundle.py` (outputs outside the repo), `packaging/kikuchiworkbench.iss`
+  (Inno Setup, Start-menu entries, optional post-install demo), `docs/windows_installer.md`. Verified on Linux:
+  bundle builds (≈ 720 MB), frozen `kwb demo` passes in a clean environment, frozen GUI starts (offscreen). First
+  build failed (`rsciio` import name of rosettasciio; plug-in metadata) — fixed in the spec. Windows build and
+  signing remain open.
