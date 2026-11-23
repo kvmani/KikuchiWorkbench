@@ -302,3 +302,10 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
 - Earlier entries that mention files under `docs/review/`, `docs/images/` or result PNGs refer to these local
   artifacts; the JSON summaries and manifests in `benchmarks/results/` remain in Git.
 - CI no longer uploads demo outputs (PNG maps) as Actions artifacts.
+
+## 2026-11-23 — Entry 17: Manual-only CI; ideas and research backlog
+
+- CI now runs only when triggered manually (`workflow_dispatch`; Actions tab → "Run workflow"); no push/PR runs.
+- `docs/ideas_and_research.md`: backlog of indexing-quality features (A1–A10), usability features (B1–B10) and
+  eight research problems with publication potential; suggested first paper: dynamical same-structure
+  discrimination limits + calibrated phase confidence.
