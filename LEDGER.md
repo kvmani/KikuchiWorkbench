@@ -271,3 +271,18 @@ offline install (Linux). **Blocked on lab hardware/data** (see docs/lab_handoff.
 (release gate), CUDA parity, EDAX/TSL and lab Oxford exports, Windows workstation GUI, Windows offline install.
 Next candidates without hardware: hexagonal map rendering, phase-margin calibration study design, dynamical-master
 version of the Ni/Cu benchmark once the reference Cu master exists.
+
+## 2026-11-23 — Entry 15: GUI run on Al–Si and progress-review deck
+
+- GUI additions for real-data use: ROI row/column selector, ×2 binning, refinement and dictionary-cache toggles on
+  step 5; full-map mean-intensity preview (was first 4096 points only); captions on measured/simulated pattern
+  panels; candidate table columns sized to content.
+- `benchmarks/gui_al_si_screenshots.py` drives the real GUI (offscreen) through all six steps on the public Al–Si
+  scan: load → Al/Si masters → authors' PC → shared calibration on 12 Al points (→ 0.500, 0.139, 1.238) → 3000-point
+  ROI, 2.5° grid, ×2 binning, refinement → inspection → export. Result: 2987 indexed, 13 ambiguous, 0 unindexed;
+  134 s with cached dictionaries (233 s first run). Screenshots, exports and summary in `docs/review/`.
+- Note for follow-up: the IPF map shows a narrow band of scattered orientations inside the Al matrix (to check —
+  possibly pseudo-symmetry or a boundary effect).
+- `docs/review/KikuchiWorkbench_progress_review.pptx` (+ PDF; generator `docs/review/build_deck.js`): 13 slides —
+  goal, scientific question, architecture, algorithm, phase decision, EMsoft convention check, GUI, calibration,
+  Al–Si maps, Ni/Cu benchmark, status, next steps.

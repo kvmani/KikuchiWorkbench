@@ -253,9 +253,15 @@ class MainWindow(QMainWindow):
                  f"Geometry source: {s['geometry_source']}"]
         lines += [f"WARNING: {w}" for w in s["warnings"]]
         self.scan_info.setPlainText("\n".join(lines))
-        n = min(scan.n_points, 4096)
+        # mean-intensity map over all points (chunked; strided subsample for very large scans)
+        step = max(1, scan.n_points // 200_000)
         mean = np.full(scan.n_points, np.nan)
-        mean[:n] = scan.get_patterns(0, n).mean(axis=(1, 2))
+        for i0 in range(0, scan.n_points, 8192 * step):
+            i1 = min(scan.n_points, i0 + 8192 * step)
+            chunk = scan.patterns[i0:i1:step]
+            if hasattr(chunk, "compute"):
+                chunk = chunk.compute()
+            mean[i0:i1:step] = np.asarray(chunk, dtype=np.float32).mean(axis=(1, 2))
         img = scan.to_map(mean)
         self.map_preview.array_shape = img.shape
         self.map_preview.setPixmap(to_pixmap(img, 260))
@@ -605,12 +611,29 @@ class MainWindow(QMainWindow):
         self.amb_margin.setRange(0, 0.5)
         self.amb_margin.setSingleStep(0.001)
         self.amb_margin.setValue(0.005)
-        self.use_roi = QCheckBox("Preview ROI only (top-left 4×4)")
+        self.use_roi = QCheckBox("Index a region of interest only")
+        roi_row = QHBoxLayout()
+        self.roi_spins = []
+        for lab, val in (("rows", 0), ("to", 4), ("cols", 0), ("to", 4)):
+            sb = QSpinBox()
+            sb.setRange(0, 100000)
+            sb.setValue(val)
+            roi_row.addWidget(QLabel(lab))
+            roi_row.addWidget(sb)
+            self.roi_spins.append(sb)
+        roi_row.addStretch(1)
+        self.bin2 = QCheckBox("Bin patterns ×2 (faster)")
+        self.refine = QCheckBox("Refine orientations (equal budget per phase)")
+        self.cache_dict = QCheckBox("Cache dictionaries")
         form.addRow("Angular resolution", self.resolution)
         form.addRow("Compute device", self.backend)
         form.addRow("Unindexed below NCC", self.min_score)
         form.addRow("Ambiguous at margin ≤", self.amb_margin)
         form.addRow(self.use_roi)
+        form.addRow("ROI (half-open)", roi_row)
+        form.addRow(self.bin2)
+        form.addRow(self.refine)
+        form.addRow(self.cache_dict)
         lay.addLayout(form)
         self.estimate_label = QLabel("")
         lay.addWidget(self.estimate_label)
@@ -629,14 +652,21 @@ class MainWindow(QMainWindow):
     def _config(self):
         from ..pipeline import IndexingConfig, PhaseSpec
 
+        from ..indexing.preprocessing import DEFAULT_PIPELINE
+
+        pre = [dict(s) for s in DEFAULT_PIPELINE]
+        if self.bin2.isChecked():
+            pre.append({"op": "bin", "factor": 2})
         return IndexingConfig(
             scan={"path": self.scan_path or "<memory>"},
             phases=[PhaseSpec(master=p["master"], name=p["name"]) for p in self.phases],
             sampling={"resolution_deg": self.resolution.value()},
-            matching={"backend": self.backend.currentText()},
+            preprocessing=pre,
+            matching={"backend": self.backend.currentText(), "cache_dictionary": self.cache_dict.isChecked()},
+            refinement={"enabled": True} if self.refine.isChecked() else {},
             decision={"min_score": self.min_score.value(), "ambiguity_margin": self.amb_margin.value(),
                       "provenance": "user-set in GUI"},
-            roi=[0, 4, 0, 4] if self.use_roi.isChecked() else None,
+            roi=[sb.value() for sb in self.roi_spins] if self.use_roi.isChecked() else None,
         )
 
     def estimate(self):
@@ -714,8 +744,10 @@ class MainWindow(QMainWindow):
         self.cand_table.setHorizontalHeaderLabels(["Phase", "Rank", "NCC", "Euler (°)"])
         right.addWidget(self.cand_table, 1)
         pats = QHBoxLayout()
-        self.pat_measured = QLabel("measured")
-        pats.addWidget(self.pat_measured)
+        self.pat_measured = QLabel("")
+        box = QGroupBox("Measured (preprocessed)")
+        QVBoxLayout(box).addWidget(self.pat_measured)
+        pats.addWidget(box)
         self.pat_sims: list[QLabel] = []
         self.pat_row = pats
         right.addLayout(pats, 1)
@@ -729,13 +761,16 @@ class MainWindow(QMainWindow):
         for e in result.manifest.events:
             self.append_log(f"  [{e['kind']}] {e['message']}")
         self.report_margin.setValue(float(result.manifest.thresholds.get("ambiguity_margin", 0.005)))
-        for lab in self.pat_sims:
-            lab.deleteLater()
-        self.pat_sims = []
+        for box in getattr(self, "pat_boxes", []):
+            box.deleteLater()
+        self.pat_sims, self.pat_boxes = [], []
         for name in result.phase_names:
-            lab = QLabel(name)
+            lab = QLabel("")
+            box = QGroupBox(f"{name}: best simulation")
+            QVBoxLayout(box).addWidget(lab)
             self.pat_sims.append(lab)
-            self.pat_row.addWidget(lab)
+            self.pat_boxes.append(box)
+            self.pat_row.addWidget(box)
         self.refresh_map()
         self.steps.setCurrentRow(5)
 
@@ -792,6 +827,7 @@ class MainWindow(QMainWindow):
                     ", ".join(f"{v:.1f}" for v in cd["euler_deg"])]
             for j, v in enumerate(vals):
                 self.cand_table.setItem(k, j, QTableWidgetItem(v))
+        self.cand_table.resizeColumnsToContents()
         self.pat_measured.setPixmap(to_pixmap(self.result.measured_pattern(i), 180))
         for p, lab in enumerate(self.pat_sims):
             sim = self.result.simulated_pattern(i, p)
