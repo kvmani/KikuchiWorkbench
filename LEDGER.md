@@ -334,3 +334,11 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   vanish are flagged stale and skipped; search by name/element/formula/space group; clean, usage),
   `kwb library list|add|remove|clean|usage`, GUI "Phase library…" dialog with search, link and
   "Add selected to project". Tests: library unit test incl. stale detection; GUI dialog test.
+- 8.6 Geometry wizard done: `geometry_wizard.py` (kinematical band centre-lines in pixel coordinates; NCC of
+  the dynamical simulation at the edited geometry); GUI step 4 panel with "Use selected result pixel" and
+  "Quick-index previewed pattern", live redraw (debounced) while editing PC/tilt. Real Al–Si check (local
+  artifacts gui_geometry_wizard*.png): calibrated PC NCC 0.29, PCx +0.02 → 0.10 with visibly shifted lines.
+- **Bugs fixed on the way:** (1) refinement crashed for a single pattern (orix one-point crystal map has shape
+  `()`); (2) a scan-mean static background erased patterns in tiny subsets (1 point → all zeros). Subsets < 200
+  points now use the parent scan's mean background; < 10 points without a parent skip the step (recorded).
+  Arrays in scan metadata are excluded from manifests and fixtures. Tests added for both.

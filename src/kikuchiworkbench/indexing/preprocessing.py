@@ -33,6 +33,11 @@ EXPERIMENTAL_ONLY = {"static_background", "dynamic_background"}
 SHARED = {"bin", "mask"}
 KNOWN = EXPERIMENTAL_ONLY | SHARED
 
+# Subsets smaller than this use the parent scan's mean background when available.
+SMALL_SCAN_POINTS = 200
+# Below this, a scan-mean background is not meaningful (it would mostly subtract the patterns themselves).
+MIN_MEAN_POINTS = 10
+
 DEFAULT_PIPELINE = [
     {"op": "static_background", "mode": "subtract", "source": "scan_mean"},
     {"op": "dynamic_background", "sigma_frac": 0.125, "mode": "subtract"},
@@ -116,6 +121,17 @@ class Preprocessor:
                     if src == "file":
                         self.notes.append("file static background missing; using scan mean")
                     n = scan.n_points
+                    parent_bg = (scan.metadata or {}).get("parent_mean_background")
+                    if n < SMALL_SCAN_POINTS and parent_bg is not None:
+                        self.static_background = np.asarray(parent_bg, dtype=np.float32)
+                        self.notes.append(f"static background = parent-scan mean (subset of {n} points is too "
+                                          f"small for its own mean)")
+                        continue
+                    if n < MIN_MEAN_POINTS:
+                        self.steps = [st for st in self.steps if st is not s]
+                        self.notes.append(f"static background skipped: only {n} pattern(s) and no parent-scan "
+                                          "background (a scan mean would erase the pattern)")
+                        continue
                     idx = np.arange(n)
                     if n > max_patterns:
                         idx = np.sort(np.random.default_rng(seed).choice(n, max_patterns, replace=False))

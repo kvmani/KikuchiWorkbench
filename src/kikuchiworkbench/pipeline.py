@@ -209,12 +209,34 @@ def roi_indices(scan: ScanData, roi) -> np.ndarray:
     return idx
 
 
+def _sampled_mean(scan: ScanData, max_patterns: int = 2000, seed: int = 0) -> np.ndarray:
+    """Mean pattern of the scan (random sample of at most ``max_patterns``), cached on the scan."""
+    cached = scan.metadata.get("_mean_background_cache")
+    if cached is not None:
+        return cached
+    n = scan.n_points
+    sel = np.arange(n) if n <= max_patterns else np.sort(np.random.default_rng(seed).choice(n, max_patterns, False))
+    acc = np.zeros(scan.pattern_shape, dtype=np.float64)
+    for i in range(0, sel.size, 256):
+        part = sel[i:i + 256]
+        chunk = scan.patterns[part]
+        if hasattr(chunk, "compute"):
+            chunk = chunk.compute()
+        acc += np.asarray(chunk, dtype=np.float64).sum(axis=0)
+    mean = (acc / sel.size).astype(np.float32)
+    scan.metadata["_mean_background_cache"] = mean
+    return mean
+
+
 def subset_scan(scan: ScanData, idx: np.ndarray) -> ScanData:
     """A view of ``scan`` restricted to points ``idx`` (patterns sliced lazily)."""
     from .io.scan import GRID_POINTS, GridInfo
 
     if idx.size == scan.n_points:
         return scan
+    parent_bg = None
+    if idx.size < 200 and scan.n_points >= 10:
+        parent_bg = _sampled_mean(scan)
     rr, cc = scan.map_indices()
     r0, r1 = int(rr[idx].min()), int(rr[idx].max()) + 1
     c0, c1 = int(cc[idx].min()), int(cc[idx].max()) + 1
@@ -234,7 +256,8 @@ def subset_scan(scan: ScanData, idx: np.ndarray) -> ScanData:
     sub = ScanData(
         patterns=pats, grid=grid, detector=det, x=scan.x[idx], y=scan.y[idx], valid=scan.valid[idx],
         vendor=scan.vendor, file_format=scan.file_format, geometry_source=scan.geometry_source,
-        metadata={**scan.metadata, "roi_of": scan.source_path, "roi_n": int(idx.size)},
+        metadata={**scan.metadata, "roi_of": scan.source_path, "roi_n": int(idx.size),
+                  **({"parent_mean_background": parent_bg} if parent_bg is not None else {})},
         warnings=list(scan.warnings),
         vendor_euler_deg=None if scan.vendor_euler_deg is None else scan.vendor_euler_deg[idx],
         static_background=scan.static_background, source_path=scan.source_path,

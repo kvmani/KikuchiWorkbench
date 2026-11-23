@@ -46,9 +46,11 @@ def refine_phase(patterns: np.ndarray, detector, loaded_master, start_quaternion
     if not valid.any():
         return out_q, out_s, out_e
     idx = np.nonzero(valid)[0]
-    sig = kp.signals.EBSD(np.ascontiguousarray(patterns[idx], dtype=np.float32))
-    xmap = CrystalMap(rotations=Rotation(q0[idx]), phase_list=PhaseList(loaded_master.phase.deepcopy()),
-                      x=np.arange(idx.size, dtype=float))
+    # orix gives a one-point crystal map the shape (), which kikuchipy rejects: refine a duplicate pair
+    run_idx = np.repeat(idx, 2) if idx.size == 1 else idx
+    sig = kp.signals.EBSD(np.ascontiguousarray(patterns[run_idx], dtype=np.float32))
+    xmap = CrystalMap(rotations=Rotation(q0[run_idx]), phase_list=PhaseList(loaded_master.phase.deepcopy()),
+                      x=np.arange(run_idx.size, dtype=float))
     tr = float(trust_region_deg)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -60,10 +62,11 @@ def refine_phase(patterns: np.ndarray, detector, loaded_master, start_quaternion
                 xmap, detector, loaded_master.signal, energy=energy_keV or 20,
                 signal_mask=~mask, method=budget.method, method_kwargs=dict(budget.method_kwargs),
                 trust_region=[tr, tr, tr], rtol=budget.rtol, maxeval=budget.maxeval)
-    out_q[idx] = ref.rotations.data
-    out_s[idx] = np.asarray(ref.prop["scores"], dtype=np.float32)
+    take = slice(0, 1) if idx.size == 1 else slice(None)
+    out_q[idx] = ref.rotations.data[take]
+    out_s[idx] = np.asarray(ref.prop["scores"], dtype=np.float32)[take]
     if "num_evals" in ref.prop:
-        out_e[idx] = np.asarray(ref.prop["num_evals"], dtype=np.int32)
+        out_e[idx] = np.asarray(ref.prop["num_evals"], dtype=np.int32)[take]
     return out_q, out_s, out_e
 
 

@@ -172,5 +172,6 @@ class ScanData:
             "has_static_background": self.static_background is not None,
             "has_vendor_orientations": self.vendor_euler_deg is not None,
             "warnings": list(self.warnings),
-            "metadata": self.metadata,
+            "metadata": {k: v for k, v in self.metadata.items()
+                         if not k.startswith("_") and not isinstance(v, np.ndarray)},
         }

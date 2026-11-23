@@ -104,7 +104,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   never into Git): inputs, settings, counts, warnings, timings, manifest link. CLI `kwb report JOB`, GUI button.
 - [x] 8.5 (B3) **Phase library and cache browser** — list/search verified masters (formula, space group, energy,
   kinematical flag, provenance); add to project in one click; prune cache.
-- [ ] 8.6 (B4) **Geometry wizard** — kinematical band-line overlay on the measured pattern, live update while
+- [x] 8.6 (B4) **Geometry wizard** — kinematical band-line overlay on the measured pattern, live update while
   editing PC/tilt, residual and NCC readout.
 - [ ] 8.7 (B7) **Batch queue** — queue several scans/ROIs/projects, run sequentially in a worker, resume after
   restart (queue file), per-item status. CLI `kwb batch QUEUE`, GUI queue panel.

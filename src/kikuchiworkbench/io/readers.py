@@ -442,7 +442,8 @@ def write_fixture(path: str | os.PathLike, scan: ScanData, truth: dict | None = 
                 else:
                     t[k] = np.asarray(v)
         h.attrs["provenance"] = json.dumps(provenance or {})
-        h.attrs["metadata"] = json.dumps(scan.metadata, default=str)
+        h.attrs["metadata"] = json.dumps({k: v for k, v in scan.metadata.items()
+                                          if not k.startswith("_") and not isinstance(v, np.ndarray)}, default=str)
     return p
 
 

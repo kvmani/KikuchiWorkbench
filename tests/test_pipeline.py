@@ -224,3 +224,12 @@ def test_per_point_pc_is_approximated_and_warned(ni):
     assert any("exceeds" in e["message"] for e in r.manifest.events if e["kind"] == "warning")
     ev = next(e for e in r.manifest.events if e["kind"] == "pc_approximation")
     assert ev["max_abs_deviation"] == pytest.approx(0.01, abs=1e-9)
+
+
+def test_refinement_single_pattern(ni):
+    path, m = ni
+    scan, truth = make_synthetic_scan([m], SyntheticSpec(nrows=1, ncols=1, seed=51))
+    r = run_indexing(_cfg([path], refinement={"enabled": True, "maxeval": 150}), scan=scan, masters=[m],
+                     export=False)
+    mis = misorientation_deg(r.best_quaternion[0], truth["quaternion"], m.phase.point_group)
+    assert r.n_points == 1 and mis[0] < 1.5 and r.per_phase_best[0, 0] > r.dictionary_best[0, 0]

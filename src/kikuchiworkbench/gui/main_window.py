@@ -459,6 +459,7 @@ class MainWindow(QMainWindow):
         if hit.size == 0:
             return
         i = int(hit[0])
+        self.preview_index = i
         raw = self.scan.get_patterns(i, i + 1)
         self.raw_preview.setPixmap(to_pixmap(raw[0], 240))
         from ..indexing.preprocessing import DEFAULT_PIPELINE, Preprocessor
@@ -776,7 +777,133 @@ class MainWindow(QMainWindow):
             QVBoxLayout(box).addWidget(lab)
             row.addWidget(box)
         lay.addLayout(row, 1)
+        # ---- geometry wizard: band overlay with live fit while editing PC / tilt
+        wiz = QGroupBox("Geometry wizard: band lines over the measured pattern (updates while you edit PC/tilt)")
+        wl = QHBoxLayout(wiz)
+        self.wiz_view = QLabel("Pick an orientation: use a result pixel or quick-index the previewed pattern.")
+        self.wiz_view.setMinimumHeight(240)
+        wl.addWidget(self.wiz_view, 2)
+        side = QVBoxLayout()
+        bres = QPushButton("Use selected result pixel")
+        bres.clicked.connect(lambda: self.wizard_from_result())
+        bq = QPushButton("Quick-index previewed pattern")
+        bq.clicked.connect(lambda: self.wizard_quick_index())
+        self.wiz_fit = QLabel("")
+        self.wiz_fit.setWordWrap(True)
+        for wdg in (bres, bq, self.wiz_fit):
+            side.addWidget(wdg)
+        side.addStretch(1)
+        wl.addLayout(side, 1)
+        lay.addWidget(wiz, 2)
+        self.wizard = None
+        from PySide6.QtCore import QTimer
+
+        self._wiz_timer = QTimer(self)
+        self._wiz_timer.setSingleShot(True)
+        self._wiz_timer.timeout.connect(self.update_wizard)
+        for sb in (*self.pc, self.det_tilt):
+            sb.valueChanged.connect(lambda _v: self._wiz_timer.start(200) if self.wizard else None)
         return w
+
+    def _field_detector(self):
+        """Detector built from the (possibly unapplied) geometry fields."""
+        from kikuchipy.detectors import EBSDDetector
+
+        d = self.scan.detector
+        return EBSDDetector(shape=d.shape, pc=[sb.value() for sb in self.pc], binning=self.binning.value(),
+                            px_size=d.px_size, tilt=self.det_tilt.value(), azimuthal=d.azimuthal, twist=d.twist,
+                            sample_tilt=d.sample_tilt)
+
+    def _wizard_pattern(self, i: int) -> np.ndarray:
+        from ..indexing.preprocessing import DEFAULT_PIPELINE, Preprocessor
+
+        if getattr(self, "_wiz_pre", None) is None or self._wiz_pre.pattern_shape != self.scan.pattern_shape:
+            self._wiz_pre = Preprocessor(list(DEFAULT_PIPELINE), self.scan.pattern_shape).fit(
+                self.scan, max_patterns=500)
+        return self._wiz_pre.apply_experimental(self.scan.get_patterns(i, i + 1))[0]
+
+    def set_wizard(self, scan_index: int, phase_index: int, quaternion):
+        from ..masters.importer import load_master
+
+        ph = self.phases[phase_index]
+        if getattr(self, "_wiz_master", None) is None or self._wiz_master[0] != ph["master"]:
+            self._wiz_master = (ph["master"], load_master(ph["master"], phase_name=ph["name"]))
+        self.wizard = {"index": int(scan_index), "phase": int(phase_index),
+                       "quaternion": np.asarray(quaternion, dtype=float).ravel(),
+                       "measured": self._wizard_pattern(int(scan_index))}
+        return self.update_wizard()
+
+    def wizard_from_result(self):
+        if self.result is None or self.selected_point is None:
+            self.append_log("Select a pixel on the results page first.")
+            return None
+        i = self.selected_point
+        p = int(self.result.decision.best_phase_any[i])
+        names = [ph["name"] for ph in self.phases]
+        phase_index = names.index(self.result.phase_names[p]) if self.result.phase_names[p] in names else p
+        return self.set_wizard(int(self.result.point_index[i]), phase_index, self.result.best_quaternion[p][i])
+
+    def wizard_quick_index(self, resolution_deg: float = 4.0):
+        """Index the previewed pattern with the first phase (coarse grid + refinement) in a worker."""
+        if self.scan is None or not self.phases:
+            self.append_log("Load a scan and a phase first.")
+            return None
+        from ..masters.importer import load_master
+        from ..pipeline import IndexingConfig, PhaseSpec, run_indexing, subset_scan
+
+        i = int(getattr(self, "preview_index", 0))
+        self.apply_geometry()
+        scan = self.scan
+        ph = self.phases[0]
+
+        def job(worker):
+            worker.report(0.1, "Quick-indexing the previewed pattern")
+            m = load_master(ph["master"], phase_name=ph["name"])
+            cfg = IndexingConfig(scan={"path": "<wizard>"}, phases=[PhaseSpec(master=ph["master"])],
+                                 sampling={"resolution_deg": resolution_deg}, refinement={"enabled": True},
+                                 allow_placeholder_geometry=True)
+            r = run_indexing(cfg, scan=subset_scan(scan, np.array([i])), masters=[m], export=False)
+            return i, r.best_quaternion[0][0], float(r.decision.best_score[0])
+
+        def done(res):
+            idx, q, score = res
+            self.append_log(f"Quick index of point {idx}: NCC {score:.3f}")
+            self.set_wizard(idx, 0, q)
+
+        return self.run_in_worker(job, done, "Quick index")
+
+    def update_wizard(self):
+        if not self.wizard or self.scan is None:
+            return None
+        from PySide6.QtGui import QPainter, QPen
+
+        from ..geometry_wizard import band_segments, fit_score
+
+        det = self._field_detector()
+        m = self._wiz_master[1]
+        q = self.wizard["quaternion"]
+        meas = self.wizard["measured"]
+        segs = band_segments(m.phase, det, q, voltage_kV=m.energy_keV or 20.0)
+        score = fit_score(m, det, q, meas)
+        pm = to_pixmap(meas, 420)
+        sx = pm.width() / meas.shape[1]
+        sy = pm.height() / meas.shape[0]
+        painter = QPainter(pm)
+        pen = QPen(Qt.GlobalColor.green)
+        pen.setWidthF(1.5)
+        painter.setPen(pen)
+        from PySide6.QtCore import QPointF
+
+        for (x0, y0), (x1, y1) in segs:
+            painter.drawLine(QPointF((x0 + 0.5) * sx, (y0 + 0.5) * sy), QPointF((x1 + 0.5) * sx, (y1 + 0.5) * sy))
+        painter.end()
+        self.wiz_view.setPixmap(pm)
+        self.wizard["last_fit"] = score
+        self.wizard["n_bands"] = len(segs)
+        self.wiz_fit.setText(f"Point {self.wizard['index']}, phase {self._wiz_master[1].info.phase_name}\n"
+                             f"PC ({', '.join(f'{sb.value():.4f}' for sb in self.pc)}), tilt {self.det_tilt.value():.2f}°\n"
+                             f"NCC with dynamical simulation: {score:.4f}\n{len(segs)} band lines drawn")
+        return score
 
     def _sync_geometry_fields(self):
         if self.scan is None:

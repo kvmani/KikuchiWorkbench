@@ -68,6 +68,18 @@ def test_gui_workflow(app, tmp_path):
     win.report_margin.setValue(0.2)  # single phase: margin is NaN so labels stay
     files = win.export_results(str(tmp_path / "export"))
     assert os.path.exists(files["table_csv"]) and (tmp_path / "export" / "manifest.json").exists()
+    win.select_point(1, 2)
+    fit0 = win.wizard_from_result()
+    # the wizard reproduces the indexing score (background estimated on the full scan, so not exact)
+    assert win.wizard["n_bands"] > 3
+    assert abs(fit0 - float(r.decision.best_score[win.selected_point])) < 0.05
+    win.pc[0].setValue(win.pc[0].value() + 0.03)  # live update via debounced timer
+    t0 = time.time()
+    while time.time() - t0 < 5 and win.wizard.get("last_fit") == fit0:
+        app.processEvents()
+        time.sleep(0.05)
+    assert win.wizard["last_fit"] < fit0
+    win.pc[0].setValue(win.pc[0].value() - 0.03)
     files = win.make_report()
     assert os.path.exists(files["html"])
     win.compare_geometry(0)
