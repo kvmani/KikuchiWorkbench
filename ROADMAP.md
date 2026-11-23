@@ -99,7 +99,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   resource check warns on RAM/time before launch. CLI `--preset`, GUI preset selector.
 - [x] 8.2 (B1) **Project files** — `.kwbproj` JSON (scan + load options, phases, geometry/calibration, settings,
   run history with job folders). Save/open in GUI, `kwb project` CLI, round-trip tests.
-- [ ] 8.3 (B2) **Interactive ROI** — drag a rectangle on the scan/result map; syncs the ROI fields.
+- [x] 8.3 (B2) **Interactive ROI** — drag a rectangle on the scan/result map; syncs the ROI fields.
 - [ ] 8.4 (B5) **One-click run report** — Markdown + self-contained HTML (maps embedded, written to the job folder,
   never into Git): inputs, settings, counts, warnings, timings, manifest link. CLI `kwb report JOB`, GUI button.
 - [ ] 8.5 (B3) **Phase library and cache browser** — list/search verified masters (formula, space group, energy,

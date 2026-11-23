@@ -243,6 +243,12 @@ def subset_scan(scan: ScanData, idx: np.ndarray) -> ScanData:
     return sub
 
 
+def _roi_origin(scan: ScanData, idx: np.ndarray) -> tuple[int, int]:
+    """(row, col) of the ROI's top-left point in the full scan map."""
+    rr, cc = scan.map_indices()
+    return int(rr[idx].min()), int(cc[idx].min())
+
+
 def _quaternions(rotations, index: np.ndarray) -> np.ndarray:
     q = rotations.data
     safe = np.clip(index, 0, q.shape[0] - 1)
@@ -486,7 +492,8 @@ def run_indexing(
         point_index=idx,
         dictionary_best=dictionary_best,
         manifest=manifest,
-        context={"scan": work_scan, "masters": masters, "detector": proj_det, "preprocessor": pre},
+        context={"scan": work_scan, "masters": masters, "detector": proj_det, "preprocessor": pre,
+                 "roi_origin": _roi_origin(scan, idx)},
         job_dir=str(job.path) if job else None,
     )
     timings["total_s"] = time.perf_counter() - t_start

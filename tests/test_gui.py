@@ -119,3 +119,39 @@ def test_gui_project_save_and_reopen(app, tmp_path):
 
     assert len(Project.load(p).runs) == 1
     win2.close()
+
+
+def test_gui_drag_roi(app, tmp_path):
+    from PySide6.QtCore import QPointF, Qt
+    from PySide6.QtGui import QMouseEvent
+
+    win = MainWindow(jobs_root=str(tmp_path))
+    win.resize(1400, 900)
+    win.show()
+    win.open_example()
+    wait_idle(app, win)
+    lab = win.map_preview
+    pm = lab.pixmap()
+    ox, oy = (lab.width() - pm.width()) / 2, (lab.height() - pm.height()) / 2
+    cell = pm.width() / 8  # 8 x 8 example map
+
+    def ev(kind, x, y):
+        p = QPointF(ox + x * cell, oy + y * cell)
+        return QMouseEvent(kind, p, p, Qt.MouseButton.LeftButton, Qt.MouseButton.LeftButton,
+                           Qt.KeyboardModifier.NoModifier)
+
+    lab.mousePressEvent(ev(QMouseEvent.Type.MouseButtonPress, 1.2, 2.2))
+    lab.mouseMoveEvent(ev(QMouseEvent.Type.MouseMove, 4.5, 6.5))
+    lab.mouseReleaseEvent(ev(QMouseEvent.Type.MouseButtonRelease, 4.5, 6.5))
+    assert win.use_roi.isChecked()
+    assert [sb.value() for sb in win.roi_spins] == [2, 7, 1, 5]
+    # a plain click does not change the ROI
+    lab.mousePressEvent(ev(QMouseEvent.Type.MouseButtonPress, 0.5, 0.5))
+    lab.mouseReleaseEvent(ev(QMouseEvent.Type.MouseButtonRelease, 0.5, 0.5))
+    assert [sb.value() for sb in win.roi_spins] == [2, 7, 1, 5]
+    win.backend.setCurrentText("cpu")
+    win.resolution.setValue(6.0)
+    win.run_indexing()
+    wait_idle(app, win)
+    assert win.result.n_points == 20 and win.result.context["roi_origin"] == (2, 1)
+    win.close()

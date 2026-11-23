@@ -48,24 +48,70 @@ STEPS = ["1. Open a scan", "2. Candidate phases", "3. Masters", "4. Detector geo
 
 
 class ClickableLabel(QLabel):
-    """QLabel reporting clicks in image-array coordinates."""
+    """QLabel reporting clicks and dragged rectangles in image-array coordinates.
 
-    def __init__(self, on_click=None):
+    A click calls ``on_click(row, col)``; a drag larger than a few pixels draws a rubber band and calls
+    ``on_rect(row0, row1, col0, col1)`` (half-open, clipped to the image).
+    """
+
+    def __init__(self, on_click=None, on_rect=None):
         super().__init__()
         self.on_click = on_click
+        self.on_rect = on_rect
         self.array_shape = None
+        self._origin = None
+        self._band = None
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-    def mousePressEvent(self, ev):  # noqa: N802 (Qt API)
-        if self.on_click is None or self.array_shape is None or self.pixmap() is None:
-            return
+    def _to_array(self, pos):
         pm = self.pixmap()
+        if self.array_shape is None or pm is None or pm.isNull():
+            return None
         off_x = (self.width() - pm.width()) / 2
         off_y = (self.height() - pm.height()) / 2
-        x = (ev.position().x() - off_x) / pm.width() * self.array_shape[1]
-        y = (ev.position().y() - off_y) / pm.height() * self.array_shape[0]
-        if 0 <= x < self.array_shape[1] and 0 <= y < self.array_shape[0]:
-            self.on_click(int(y), int(x))
+        x = (pos.x() - off_x) / pm.width() * self.array_shape[1]
+        y = (pos.y() - off_y) / pm.height() * self.array_shape[0]
+        return y, x
+
+    def mousePressEvent(self, ev):  # noqa: N802 (Qt API)
+        self._origin = ev.position().toPoint()
+        if self.on_rect is not None:
+            from PySide6.QtCore import QRect, QSize
+            from PySide6.QtWidgets import QRubberBand
+
+            if self._band is None:
+                self._band = QRubberBand(QRubberBand.Shape.Rectangle, self)
+            self._band.setGeometry(QRect(self._origin, QSize()))
+            self._band.show()
+
+    def mouseMoveEvent(self, ev):  # noqa: N802
+        if self._band is not None and self._origin is not None:
+            from PySide6.QtCore import QRect
+
+            self._band.setGeometry(QRect(self._origin, ev.position().toPoint()).normalized())
+
+    def mouseReleaseEvent(self, ev):  # noqa: N802
+        if self._band is not None:
+            self._band.hide()
+        if self._origin is None:
+            return
+        end = ev.position().toPoint()
+        start, self._origin = self._origin, None
+        a, b = self._to_array(start), self._to_array(end)
+        if a is None or b is None:
+            return
+        dragged = abs(end.x() - start.x()) > 4 or abs(end.y() - start.y()) > 4
+        h, w = self.array_shape
+        if dragged and self.on_rect is not None:
+            r0, r1 = sorted((a[0], b[0]))
+            c0, c1 = sorted((a[1], b[1]))
+            r0, c0 = max(0, int(r0)), max(0, int(c0))
+            r1, c1 = min(h, int(np.ceil(r1))), min(w, int(np.ceil(c1)))
+            if r1 > r0 and c1 > c0:
+                self.on_rect(r0, r1, c0, c1)
+            return
+        if self.on_click is not None and 0 <= b[1] < w and 0 <= b[0] < h:
+            self.on_click(int(b[0]), int(b[1]))
 
 
 class MainWindow(QMainWindow):
@@ -332,10 +378,10 @@ class MainWindow(QMainWindow):
         self.scan_info.setReadOnly(True)
         lay.addWidget(self.scan_info, 1)
         pv = QHBoxLayout()
-        self.map_preview = ClickableLabel(self._preview_point)
+        self.map_preview = ClickableLabel(self._preview_point, self.set_roi)
         self.raw_preview = QLabel("raw pattern")
         self.pre_preview = QLabel("preprocessed pattern")
-        for lab, title in ((self.map_preview, "Map (mean intensity) — click a point"),
+        for lab, title in ((self.map_preview, "Map (mean intensity) — click a point, drag to select an ROI"),
                            (self.raw_preview, "Raw pattern (read-only)"),
                            (self.pre_preview, "Preprocessed pattern")):
             box = QGroupBox(title)
@@ -785,6 +831,23 @@ class MainWindow(QMainWindow):
         lay.addStretch(1)
         return w
 
+    def set_roi(self, r0: int, r1: int, c0: int, c1: int):
+        """Set the indexing ROI (half-open rows/cols), e.g. from a rectangle dragged on a map."""
+        roi_scan = (r0, r1, c0, c1)
+        if self.result is not None and self.sender_is_result_map():
+            # result maps may show an ROI; translate back to full-scan rows/cols
+            base = self.result.context.get("roi_origin", (0, 0))
+            roi_scan = (r0 + base[0], r1 + base[0], c0 + base[1], c1 + base[1])
+        for sb, v in zip(self.roi_spins, roi_scan, strict=True):
+            sb.setValue(int(v))
+        self.use_roi.setChecked(True)
+        n = (roi_scan[1] - roi_scan[0]) * (roi_scan[3] - roi_scan[2])
+        self.append_log(f"ROI set to rows {roi_scan[0]}–{roi_scan[1]}, cols {roi_scan[2]}–{roi_scan[3]} ({n} points)")
+        return roi_scan
+
+    def sender_is_result_map(self) -> bool:
+        return self.stack.currentIndex() == 5
+
     def apply_preset(self, name: str):
         """Set the step-5 widgets from a preset; widgets stay editable afterwards."""
         from ..presets import PRESETS
@@ -897,7 +960,7 @@ class MainWindow(QMainWindow):
         self.counts_label = QLabel("")
         lay.addWidget(self.counts_label)
         body = QHBoxLayout()
-        self.result_map = ClickableLabel(self.select_point)
+        self.result_map = ClickableLabel(self.select_point, self.set_roi)
         body.addWidget(self.result_map, 2)
         right = QVBoxLayout()
         self.cand_table = QTableWidget(0, 4)

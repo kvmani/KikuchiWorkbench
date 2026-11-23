@@ -323,3 +323,6 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   calibration, settings, run history; paths relative to the project file, so folders can move), GUI File menu
   (New / Open / Save / Save as; geometry reapplied after the scan loads; runs appended and auto-saved),
   `kwb project show|run`. Tests: round trip + move, CLI run recorded, GUI save → reopen → run.
+- 8.3 Interactive ROI done: drag a rectangle (rubber band) on the scan map or the result map to set the ROI
+  fields; result-map rectangles are translated back to full-scan rows/cols (`roi_origin` in the result context);
+  clicks still select pixels. GUI test drives mouse events: drag → ROI [2,7,1,5] → 20-point run.
