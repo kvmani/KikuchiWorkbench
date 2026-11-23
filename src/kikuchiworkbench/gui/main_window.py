@@ -499,6 +499,9 @@ class MainWindow(QMainWindow):
         b1.clicked.connect(self._choose_master)
         b2 = QPushButton("Validate CIF…")
         b2.clicked.connect(self._choose_cif)
+        blib = QPushButton("Phase library…")
+        blib.clicked.connect(lambda: self.open_library())
+        row.addWidget(blib)
         b3 = QPushButton("Remove selected")
         b3.clicked.connect(self._remove_phase)
         for b in (b1, b2, b3):
@@ -534,6 +537,78 @@ class MainWindow(QMainWindow):
         self.phase_list.addItem(f"{name} — SG {info.space_group} ({info.point_group}){tag}")
         self.append_log(f"Added phase {name} from {path}")
         return info
+
+    def open_library(self, root: str | None = None, show: bool = True):
+        """Searchable list of library masters; 'Add to project' adds the selected ones as phases."""
+        from PySide6.QtWidgets import QDialog, QLineEdit
+
+        from ..library import PhaseLibrary
+
+        lib = PhaseLibrary(root)
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Phase library")
+        dlg.resize(1000, 520)
+        lay = QVBoxLayout(dlg)
+        search = QLineEdit()
+        search.setPlaceholderText("Search name, element, formula or space-group number")
+        lay.addWidget(search)
+        table = QTableWidget(0, 8)
+        table.setHorizontalHeaderLabels(["Name", "Formula", "SG", "Energies (keV)", "Type", "Source", "sha256", "Path"])
+        table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        lay.addWidget(table, 1)
+        row = QHBoxLayout()
+        badd = QPushButton("Add selected to project")
+        blink = QPushButton("Link master file…")
+        info = QLabel("")
+        row.addWidget(blink)
+        row.addWidget(badd)
+        row.addWidget(info, 1)
+        lay.addLayout(row)
+        state = {"entries": []}
+
+        def refresh():
+            ents = lib.entries(search.text() or None)
+            state["entries"] = ents
+            table.setRowCount(len(ents))
+            for i, e in enumerate(ents):
+                kind = "STALE" if e.get("stale") else ("kinematical" if e.get("kinematical") else "dynamical")
+                en = e.get("energies_keV") or []
+                vals = [str(e.get("name")), e.get("formula", ""), str(e.get("space_group")),
+                        f"{en[0]:g}–{en[-1]:g}" if len(en) > 1 else (f"{en[0]:g}" if en else ""),
+                        kind, e["source"], e["sha256"][:12], e["path"]]
+                for j, v in enumerate(vals):
+                    table.setItem(i, j, QTableWidgetItem(v))
+            table.resizeColumnsToContents()
+            info.setText(f"{len(ents)} master(s); cache {lib.cache.root}")
+
+        def add_selected():
+            rows = sorted({ix.row() for ix in table.selectedIndexes()})
+            for r in rows:
+                e = state["entries"][r]
+                if e.get("stale"):
+                    self.append_log(f"Skipped stale library entry {e.get('name')}: {e.get('stale_reason')}")
+                    continue
+                if not any(p["master"] == e["path"] for p in self.phases):
+                    self.add_master(e["path"], e.get("name"))
+            return rows
+
+        def link():
+            path, _ = QFileDialog.getOpenFileName(dlg, "Link EMsoft master", "", "HDF5 (*.h5 *.hdf5)")
+            if path:
+                try:
+                    lib.add(path)
+                except WorkbenchError as err:
+                    info.setText(f"Rejected: {err.message}")
+                refresh()
+
+        search.textChanged.connect(lambda _t: refresh())
+        badd.clicked.connect(lambda: add_selected())
+        blink.clicked.connect(lambda: link())
+        refresh()
+        dlg.library, dlg.table, dlg.search, dlg.add_selected, dlg.refresh = lib, table, search, add_selected, refresh
+        if show:
+            dlg.show()
+        return dlg
 
     def _remove_phase(self):
         r = self.phase_list.currentRow()

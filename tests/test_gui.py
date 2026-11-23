@@ -157,3 +157,20 @@ def test_gui_drag_roi(app, tmp_path):
     wait_idle(app, win)
     assert win.result.n_points == 20 and win.result.context["roi_origin"] == (2, 1)
     win.close()
+
+
+def test_gui_phase_library(app, tmp_path, kp_data_dir):
+    from kikuchiworkbench.library import PhaseLibrary
+
+    mp = os.path.join(kp_data_dir, "emsoft_ebsd_master_pattern", "ni_mc_mp_20kv_uint8_gzip_opts9.h5")
+    PhaseLibrary(tmp_path / "cache").add(mp, name="NiLib")
+    win = MainWindow(jobs_root=str(tmp_path))
+    dlg = win.open_library(str(tmp_path / "cache"), show=False)
+    assert dlg.table.rowCount() == 1
+    dlg.search.setText("zz")
+    assert dlg.table.rowCount() == 0
+    dlg.search.setText("ni")
+    dlg.table.selectRow(0)
+    dlg.add_selected()
+    assert [p["name"] for p in win.phases] == ["NiLib"]
+    win.close()

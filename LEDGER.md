@@ -330,3 +330,7 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   URIs) from the job's manifest, results CSV and maps; written automatically after `run_indexing_job`, via
   `kwb report JOB` and the GUI "Report" button. Report files stay in job folders (never in Git). Checked
   visually on the Al–Si GUI job (local artifact `~/kwb_review_artifacts/review/alsi_run_report.html`).
+- 8.5 Phase library done: `library.py` (cached + linked masters, verified on add; linked files that change or
+  vanish are flagged stale and skipped; search by name/element/formula/space group; clean, usage),
+  `kwb library list|add|remove|clean|usage`, GUI "Phase library…" dialog with search, link and
+  "Add selected to project". Tests: library unit test incl. stale detection; GUI dialog test.

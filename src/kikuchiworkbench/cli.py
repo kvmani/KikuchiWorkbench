@@ -183,6 +183,35 @@ def cmd_project(a) -> int:
     return 0
 
 
+def cmd_library(a) -> int:
+    from .library import PhaseLibrary
+
+    lib = PhaseLibrary(a.cache)
+    if a.library_cmd == "add":
+        e = lib.add(a.file, copy=a.copy, name=a.name)
+        print(f"Added {e['name']} ({e['formula']}, SG {e['space_group']}) as {e['source']}: {e['path']}")
+    elif a.library_cmd == "remove":
+        print(f"Removed {lib.remove(a.sha)} entr(y/ies)")
+    elif a.library_cmd == "clean":
+        print(lib.clean())
+    elif a.library_cmd == "usage":
+        _print_json(lib.cache_usage())
+    else:
+        entries = lib.entries(a.query)
+        if a.json:
+            _print_json(entries)
+            return 0
+        for e in entries:
+            flag = " [KINEMATICAL]" if e.get("kinematical") else ""
+            stale = f" [STALE: {e.get('stale_reason')}]" if e.get("stale") else ""
+            print(f"{str(e.get('name')):14s} {e.get('formula', ''):10s} SG {str(e.get('space_group')):>4s} "
+                  f"E {e.get('energies_keV')[-1:] if e.get('energies_keV') else '-'} keV  {e['source']:7s} "
+                  f"{e['sha256'][:12]}{flag}{stale}\n    {e['path']}")
+        if not entries:
+            print("Library is empty. Add masters with `kwb library add MASTER.h5`.")
+    return 0
+
+
 def cmd_report(a) -> int:
     from .report import write_report
 
@@ -330,6 +359,22 @@ def build_parser() -> argparse.ArgumentParser:
     prun.add_argument("--preset", choices=["quick", "standard", "phase_study"])
     prun.add_argument("--quiet", action="store_true")
     pj.set_defaults(fn=cmd_project)
+
+    lb = sub.add_parser("library", help="phase library of verified masters and cache browser")
+    lb.add_argument("--cache", default=None, help="cache/library root (default: user cache)")
+    lbs = lb.add_subparsers(dest="library_cmd", required=True)
+    ll = lbs.add_parser("list")
+    ll.add_argument("query", nargs="?", default=None, help="name, element, formula or space-group number")
+    ll.add_argument("--json", action="store_true")
+    la = lbs.add_parser("add")
+    la.add_argument("file")
+    la.add_argument("--copy", action="store_true", help="copy into the cache instead of linking")
+    la.add_argument("--name")
+    lr = lbs.add_parser("remove")
+    lr.add_argument("sha", help="sha256 prefix")
+    lbs.add_parser("clean", help="remove incomplete cache entries and stale links")
+    lbs.add_parser("usage", help="cache disk usage per kind (GB)")
+    lb.set_defaults(fn=cmd_library)
 
     rp = sub.add_parser("report", help="write report.md and report.html for a job folder")
     rp.add_argument("job")
