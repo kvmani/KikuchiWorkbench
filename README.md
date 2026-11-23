@@ -40,7 +40,7 @@ kwb-gui
 ```
 
 Full walkthrough: [docs/quickstart.md](docs/quickstart.md) · Vendor exports: [docs/vendor_export.md](docs/vendor_export.md)
-· Parameters and CLI: [docs/parameters.md](docs/parameters.md) · Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
+· Parameters and CLI: [docs/parameters.md](docs/parameters.md) · Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md) · Lab hand-off checks: [docs/lab_handoff.md](docs/lab_handoff.md)
 
 ## Development
 
