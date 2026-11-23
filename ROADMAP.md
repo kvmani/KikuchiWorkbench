@@ -78,7 +78,7 @@ until evidence from a suitable machine is recorded.
 - [x] 6.2 Worker threads with progress, cancel and log panel; GUI stays responsive.
 - [x] 6.3 Scan view: map grid, pattern preview raw/preprocessed side by side.
 - [x] 6.4 Phase view: crystal summary and validation messages.
-- [~] 6.5 Geometry check: experimental vs simulated overlay/residual.
+- [x] 6.5 Geometry check: experimental vs simulated overlay/residual.
 - [~] 6.6 Results: phase/IPF/score/margin maps, pixel picker with per-phase candidates and best simulated pattern, threshold slider, export.
 - [x] 6.7 Offscreen GUI smoke test in CI.
 - [ ] 6.8 **[HW]** Windows GUI launch + bundled demo smoke test; offline installer / portable bundle.

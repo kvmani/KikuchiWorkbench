@@ -64,6 +64,9 @@ def test_gui_workflow(app, tmp_path):
     assert os.path.exists(files["table_csv"]) and (tmp_path / "export" / "manifest.json").exists()
     win.compare_geometry(0)
     assert win.geo_res.pixmap() is not None
+    win.calibrate_geometry(n_points=4, resolution_deg=6.0)
+    wait_idle(app, win)
+    assert win.scan.geometry_source == "calibrated" and "Calibrated PC" in win.calib_label.text()
     win.close()
 
 

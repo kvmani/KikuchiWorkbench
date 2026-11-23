@@ -250,3 +250,5 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - `docs/lab_handoff.md`: the seven checks that need lab hardware/data (native EMsoft + reference projection, CUDA
   parity, EDAX/TSL and Oxford lab exports, Windows GUI, offline install) with exact commands and what to record.
 - Next: confirm CI green; GUI polish (hexagonal map display, calibration controls in step 4).
+- GUI step 4: "Calibrate PC on the first phase (shared by all phases)" runs the shared calibration in a worker,
+  applies the median PC to the scan and shows start/result/spread; offscreen GUI test extended (passes).

@@ -496,6 +496,12 @@ class MainWindow(QMainWindow):
         b = QPushButton("Apply geometry to scan (recorded as user geometry)")
         b.clicked.connect(self.apply_geometry)
         lay.addWidget(b)
+        bc = QPushButton("Calibrate PC on the first phase (shared by all phases)")
+        bc.clicked.connect(lambda: self.calibrate_geometry())
+        lay.addWidget(bc)
+        self.calib_label = QLabel("")
+        self.calib_label.setWordWrap(True)
+        lay.addWidget(self.calib_label)
         b2 = QPushButton("Compare experimental vs simulated (after indexing an ROI)")
         b2.clicked.connect(lambda: self.compare_geometry())
         lay.addWidget(b2)
@@ -517,6 +523,36 @@ class MainWindow(QMainWindow):
             sb.setValue(float(v))
         self.det_tilt.setValue(float(d.tilt))
         self.binning.setValue(int(d.binning))
+
+    def calibrate_geometry(self, n_points: int = 9, resolution_deg: float = 4.0):
+        """Run the shared PC calibration in a worker and apply the median PC to the scan."""
+        if self.scan is None or not self.phases:
+            self.append_log("Load a scan and at least one phase before calibrating.")
+            return None
+        from ..indexing.calibration import apply_calibration, calibrate_pc
+        from ..indexing.preprocessing import DEFAULT_PIPELINE, Preprocessor
+        from ..masters.importer import load_master
+
+        self.apply_geometry()  # start from the values shown in the fields
+        scan = self.scan
+        ref = self.phases[0]
+
+        def job(worker):
+            worker.report(0.05, f"Calibrating PC with {ref['name']}")
+            m = load_master(ref["master"], phase_name=ref["name"])
+            pre = Preprocessor(list(DEFAULT_PIPELINE), scan.pattern_shape).fit(scan, max_patterns=500)
+            return calibrate_pc(scan, m, pre, n_points=n_points, resolution_deg=resolution_deg)
+
+        def done(cal):
+            self.scan = apply_calibration(self.scan, cal)
+            self._sync_geometry_fields()
+            self.calib_label.setText(
+                "Calibrated PC (Bruker) {} from {} points with {}; start {}; spread (std) {}".format(
+                    [round(v, 4) for v in cal["pc_bruker"]], cal["n_used"], cal["reference_phase"],
+                    [round(v, 4) for v in cal["pc_bruker_start"]], [round(v, 4) for v in cal["pc_spread_std"]]))
+            self.append_log("PC calibration applied; it is shared by all phases and recorded in the scan metadata.")
+
+        return self.run_in_worker(job, done, "PC calibration")
 
     def apply_geometry(self):
         if self.scan is None:
