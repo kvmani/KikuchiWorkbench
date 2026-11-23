@@ -40,12 +40,12 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 3 — Master patterns and crystals (milestone 1–2)
 
-- [ ] 3.1 Import EMsoft master HDF5: verify projection, hemispheres, energy bins, phase/space group, checksum.
-- [ ] 3.2 Master cache keyed by crystal + simulation settings + provenance; atomic promotion only after verification.
-- [ ] 3.3 CIF reader/validator: cell units, setting/origin, sites, occupancies; positive and negative controls (equivalent axis settings, malformed occupancies, unsupported representations).
-- [ ] 3.4 EMsoft `.xtal` writer from validated CIF.
+- [x] 3.1 Import EMsoft master HDF5: verify projection, hemispheres, energy bins, phase/space group, checksum.
+- [x] 3.2 Master cache keyed by crystal + simulation settings + provenance; atomic promotion only after verification.
+- [x] 3.3 CIF reader/validator: cell units, setting/origin, sites, occupancies; positive and negative controls (equivalent axis settings, malformed occupancies, unsupported representations).
+- [~] 3.4 EMsoft `.xtal` writer from validated CIF.
 - [ ] 3.5 EMsoft job adapter: namelist generation for crystal, Monte Carlo (`EMMCOpenCL`) and master (`EMEBSDmaster`) as distinct stages; no-shell subprocess, per-job working directory, logs, cancellation, HDF5 verification before cache promotion. Tested with a mock executable.
-- [ ] 3.6 Kinematical master generator (kikuchipy) for offline synthetic fixtures — clearly labelled as kinematical, never as dynamical EMsoft output.
+- [x] 3.6 Kinematical master generator (kikuchipy) for offline synthetic fixtures — clearly labelled as kinematical, never as dynamical EMsoft output.
 - [!] 3.7 **[HW]** Native Windows 11 EMsoft CIF → xtal → MC → master run with OpenCL; reproducible recipe; compare with reference projection. Release gate.
 
 ## Phase 4 — Headless scientific workflow (milestone 2)

@@ -37,3 +37,26 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   3×3 hex header, inconsistent with the assumed `ncols_even = ncols_odd − 1`; we refuse it as a grid and allow
   `grid_type="points"`. Hexagonal layout assumption must be verified on a real OIM export (roadmap 2.7).
 - Next: master import/verification + cache (3.1, 3.2), then CIF validation (3.3).
+
+## 2026-11-23 — Entry 3: Crystals, masters, cache
+
+- `crystal/cif.py`: CIF → `CrystalModel` validated against the EMsoft representation (space group, origin choice,
+  Å/° cell, asymmetric unit, occupancy, B). Origin choice for the 24 two-origin groups from operators, `:1/:2`
+  symbols or tags; ambiguous → rejected. Origin-2 coordinates are shifted to origin 1 for orix/diffpy (which only
+  tabulate origin 1). Rejects: rhombohedral axes, non-standard monoclinic/tetragonal metrics, nm cells, malformed or
+  >1 occupancies, modulated and magnetic CIFs, isotopes.
+  Controls in `tests/data/cif/`: Ni, Cu, Ni with shifted origin, Si origin 1/2 (identical |F|, diamond 200
+  extinction), and 6 negative controls.
+- `crystal/xtal.py`: EMsoft `CrystalData` writer/reader (nm, nm² B). Trigonal crystal-system code and string widths
+  still to be confirmed against EMmkxtal (3.4 partial, needs 3.7).
+- `masters/importer.py`: verifies EMsoft master HDF5 (projection, hemispheres, energy bins strictly increasing,
+  finite non-constant content, space group, MC tilt/energy), drops personal header fields, sha256. Loads Lambert
+  data directly with h5py (kikuchipy's reader only accepts EMsoft program names); data identical to kikuchipy's for
+  the Ni master. Energy: max / nearest keV / weighted (global MC-histogram weights — recorded as an approximation).
+- `masters/kinematical.py`: kinematical masters (kikuchipy simulator) written in EMsoft layout and labelled
+  `NOT dynamical EMsoft` in `ProgramName`; used for offline synthetic fixtures only.
+- `cache.py` + `masters/cache.py`: content-addressed cache, staging dir, verify-then-atomic-promote, `COMPLETE`
+  marker; failed verification never promotes.
+- Evidence: `pytest -q` → 68 passed; `ruff check` clean. kikuchipy's Al2Cu multi-energy sample is rejected as
+  constant (it is a synthetic reader fixture) — used as a negative control.
+- Next: indexing core — sampling, dictionary projection in bounded batches, CPU NCC matcher, phase decision (4.x).
