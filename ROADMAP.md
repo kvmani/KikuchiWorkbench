@@ -36,7 +36,7 @@ until evidence from a suitable machine is recorded.
 - [x] 2.4 EMsoft simulated EBSD HDF5 and project fixture format (known geometry, orientations, phases, coordinates).
 - [x] 2.5 Actionable rejection of pattern-free inputs (`.ang`, `.ctf`, pattern-free HDF5) with export instructions.
 - [~] 2.6 Per-vendor file checks (structure fingerprint, dims, bit depth, scan order) with tests on synthetic structural fixtures.
-- [ ] 2.7 **[HW/data]** Verify against real representative Oxford and EDAX/TSL exports; publish supported-versions matrix.
+- [~] 2.7 **[HW/data]** Verify against real representative Oxford and EDAX/TSL exports; publish supported-versions matrix.
 
 ## Phase 3 — Master patterns and crystals (milestone 1–2)
 
