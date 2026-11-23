@@ -4,6 +4,13 @@
 
 KikuchiWorkbench is a Windows-first desktop application for master-pattern-based EBSD dictionary indexing. Read [KikuchiWorkbench_Project_Scope.md](KikuchiWorkbench_Project_Scope.md) before implementing or changing the workflow. Use the scope as the release contract. Record implementation evidence and benchmark limitations separately from planned features.
 
+## Cardinal rule: no binary content in Git
+
+Never commit binary files (images, screenshots, PDFs, slide decks, Office documents, HDF5/NumPy data, archives,
+executables) unless the repository owner explicitly asks for a specific file. Keep review artifacts, figures and
+generated data outside the repository (for example `~/kwb_review_artifacts`) and present them directly.
+`tools/check_no_binaries.py` enforces this in `tools/checkpoint.sh` and in CI.
+
 ## First development task
 
 Prove the smallest native Windows 11 simulation workflow and verify real Oxford and EDAX/TSL input fixtures. Identify a supported EMsoft revision, Windows build/runtime dependencies, EMsoft data files, HDF5 compatibility, and a compatible OpenCL device. Save a reproducible recipe for one cubic CIF through crystal conversion, Monte Carlo transport and dynamical master generation. Check the generated master against a reference detector projection. If native simulation cannot yet run, document the exact blocker and continue independent work on importing masters and the headless CPU demo. Keep native Windows generation as a release gate.

@@ -5,6 +5,11 @@ set -euo pipefail
 msg="${1:?commit message required}"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 git add -A
+if ! python3 tools/check_no_binaries.py; then
+  git reset -q
+  echo "Aborted: binary files staged (see above)." >&2
+  exit 1
+fi
 if ! git diff --cached --quiet; then
   git commit -q -m "$msg" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_011oMNbFgKPXgg7QeRZ94JA1"

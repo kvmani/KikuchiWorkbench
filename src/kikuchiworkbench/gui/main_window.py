@@ -650,9 +650,8 @@ class MainWindow(QMainWindow):
         return w
 
     def _config(self):
-        from ..pipeline import IndexingConfig, PhaseSpec
-
         from ..indexing.preprocessing import DEFAULT_PIPELINE
+        from ..pipeline import IndexingConfig, PhaseSpec
 
         pre = [dict(s) for s in DEFAULT_PIPELINE]
         if self.bin2.isChecked():

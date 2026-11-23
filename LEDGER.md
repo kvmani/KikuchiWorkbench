@@ -286,3 +286,18 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
 - `docs/review/KikuchiWorkbench_progress_review.pptx` (+ PDF; generator `docs/review/build_deck.js`): 13 slides —
   goal, scientific question, architecture, algorithm, phase decision, EMsoft convention check, GUI, calibration,
   Al–Si maps, Ni/Cu benchmark, status, next steps.
+
+## 2026-11-23 — Entry 16: Binary files purged from Git history; no-binaries rule enforced
+
+- Owner's cardinal rule: **no binary content in GitHub repositories unless explicitly requested.** Review artifacts
+  stay on the working machine only.
+- Removed from the repository **and its entire history** (git filter-repo, then force-push of `main` and the
+  working branch): `docs/review/` (deck, PDF, GUI screenshots, maps, exported results), `docs/images/`, and all PNGs
+  under `benchmarks/results/` — 34 binary files in total. A pre-rewrite backup bundle and every artifact are kept
+  locally in `~/kwb_review_artifacts` (this machine) — not in Git.
+- Guards: `tools/check_no_binaries.py` (NUL-byte or binary-extension check on all tracked files) runs in
+  `tools/checkpoint.sh` before every commit and as a CI step; binary patterns added to `.gitignore`; rule added to
+  `AGENTS.md`. Screenshot driver and deck generator (`tools/build_review_deck.js`) now write to
+  `$KWB_ARTIFACTS_DIR` (default `~/kwb_review_artifacts`) outside the repository.
+- Earlier entries that mention files under `docs/review/`, `docs/images/` or result PNGs refer to these local
+  artifacts; the JSON summaries and manifests in `benchmarks/results/` remain in Git.

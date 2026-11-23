@@ -32,6 +32,8 @@ jobs:
           pip install -e ".[dev,gui]"
       - name: Record versions
         run: pip freeze
+      - name: No binary files in the repository
+        run: python tools/check_no_binaries.py
       - name: Lint
         run: ruff check src tests
       - name: Unit and integration tests (offline, CPU; no EMsoft/CUDA/real data)

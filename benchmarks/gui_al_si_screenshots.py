@@ -1,6 +1,6 @@
 """Drive the desktop GUI on the public Al-Si data and save screenshots of each workflow step.
 
-    QT_QPA_PLATFORM=offscreen python benchmarks/gui_al_si_screenshots.py --data ~/kwb_data --out docs/review
+    QT_QPA_PLATFORM=offscreen python benchmarks/gui_al_si_screenshots.py --data ~/kwb_data --out ~/kwb_review_artifacts/review
 """
 
 import argparse
@@ -28,12 +28,13 @@ def main():
     warnings.filterwarnings("ignore")
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default=str(Path.home() / "kwb_data"))
-    ap.add_argument("--out", default="docs/review")
+    ap.add_argument("--out", default=str(Path.home() / "kwb_review_artifacts" / "review"),
+                    help="artifact folder OUTSIDE the repository (no binaries in Git)")
     ap.add_argument("--jobs", default="kwb_gui_jobs")
     ap.add_argument("--roi", type=int, nargs=4, default=[90, 140, 90, 150])
     a = ap.parse_args()
     d = Path(a.data).expanduser()
-    out = Path(a.out)
+    out = Path(a.out).expanduser()
     out.mkdir(parents=True, exist_ok=True)
     from kikuchiworkbench.gui.main_window import MainWindow
 

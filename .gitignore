@@ -20,3 +20,25 @@ cache/
 /data/
 /outputs/
 benchmarks/results/*/cache/
+
+# Cardinal rule: no binary content in the repository (review artifacts live outside it)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.tif
+*.tiff
+*.pdf
+*.ppt
+*.pptx
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.zip
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.bundle
+docs/review/
