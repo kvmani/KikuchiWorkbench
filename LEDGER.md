@@ -60,3 +60,37 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Evidence: `pytest -q` → 68 passed; `ruff check` clean. kikuchipy's Al2Cu multi-energy sample is rejected as
   constant (it is a synthetic reader fixture) — used as a negative control.
 - Next: indexing core — sampling, dictionary projection in bounded batches, CPU NCC matcher, phase decision (4.x).
+
+## 2026-11-23 — Entry 4: Headless indexing core, CLI and offline demo
+
+- `indexing/preprocessing.py`: recorded pipeline (static background from file or scan mean, Gaussian dynamic
+  background, binning, circular mask); raw patterns untouched; shared steps also applied to simulations; signal
+  metric (smoothed/residual std) for low-signal flags, separate from orientation fit.
+- `indexing/sampling.py`: orix cubochoric fundamental-zone sampling; count estimate (empirical constant, ±5% for
+  m-3m) and RAM/disk estimate recorded in the manifest.
+- `indexing/dictionary.py`: per-phase chunked projection with kikuchipy (single mean PC; spread recorded as a
+  `pc_approximation` event).
+- `indexing/matching.py`: NCC (float32), running top-k per phase with deterministic tie policy (score desc, index
+  asc; verified invariant to chunk size with heavy ties), CPU backend, optional PyTorch CUDA backend, Auto
+  selection, OOM → batch halving → CPU fallback, all recorded as manifest events.
+- `indexing/decision.py`: labels indexed / ambiguous / unindexed / low_signal / missing; per-phase best scores,
+  runner-up, margin, exact-tie flag. Default thresholds are explicitly marked *provisional, not calibrated*.
+- `jobs.py`: job folders with `status.json`, `job.log`, `work/`, `outputs/`; `COMPLETE` only on success, `INVALID`
+  on failure/cancel (scratch removed); thread-safe cancel token.
+- `export.py`: phase, IPF-Z, score, margin, signal PNG maps; CSV; HDF5 results (top-k per phase); manifest.
+- `pipeline.py`: shared core (`IndexingConfig` from YAML/JSON, ROI, equal sampling for all phases, warnings for
+  kinematical masters and tilt/voltage mismatches); `synthetic.py`: seeded synthetic scans with ground truth.
+- `cli.py` (`kwb inspect | master | cif | kinematical | index | demo | emsoft plan`), `demo.py`.
+- Evidence (this container, CPU only):
+  - `kwb demo` (EMsoft dynamical Ni master bundled with kikuchipy, 6×6 off-grid random orientations, asymmetric
+    PC, background + Poisson noise, 4° grid): 36/36 indexed, median misorientation 1.97°, max 3.88°, 7 s.
+  - `kwb demo --two-phase` (kinematical Ni a=3.524 Å vs Cu a=3.615 Å): 36/36 correct phase, median
+    misorientation 1.90°; phase margins only 0.02–0.07 NCC on clean synthetic data — a first indication of how
+    small the Ni/Cu separation is. Kinematical masters, not a dynamical result.
+  - Tests: exact-grid recovery (<0.5°, NCC>0.99), identical masters → all ambiguous with tie flag, pure-noise
+    patterns → unindexed with lower signal metric, cancellation (callback and cross-thread) → INVALID job, missing
+    geometry → failed job, OOM fallback. `pytest -q` → 93 passed in 17 s; `ruff` clean.
+- Found and fixed: dynamic background *division* with σ = 4 px destroyed band contrast on 60×60 patterns
+  (median NCC 0.10 vs 0.49); default is now subtraction with σ = width/8.
+- Next: EMsoft job adapter (namelists, no-shell runner, mock executable tests) for `kwb emsoft plan`; then CI
+  workflow, GUI skeleton.

@@ -50,22 +50,22 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 4 — Headless scientific workflow (milestone 2)
 
-- [ ] 4.1 Detector geometry service: import vendor PC, binning, crop; simulated vs experimental preview/residual.
-- [ ] 4.2 Preprocessing pipeline (background removal, normalisation, masks) recorded and reproducible; raw data never modified.
-- [ ] 4.3 Symmetry-reduced orientation sampling (orix) with resource estimate (orientations, RAM, disk).
-- [ ] 4.4 Bounded-batch dictionary projection per phase (kikuchipy), cache key including detector, grid, preprocessing.
-- [ ] 4.5 CPU NCC matcher (NumPy/BLAS), chunked, top-k per phase, deterministic tie policy.
-- [ ] 4.6 Phase decision: best score per phase, runner-up, margin, unindexed (low score) and ambiguous (small margin) kept distinct.
-- [ ] 4.7 Exports: PNG maps (phase, IPF, score, margin, ambiguity), CSV table, manifest.
-- [ ] 4.8 Job system: isolated job folders, status file, logs, progress callback, cancellation; failed/cancelled outputs never promoted.
-- [ ] 4.9 CLI `kwb`: `inspect`, `demo`, `index` (config file), `master import`, `cif validate`, `xtal`, `emsoft plan`.
-- [ ] 4.10 Offline small CPU demo end-to-end from the bundled Ni master; test asserting exact-grid orientation recovery up to symmetry.
+- [~] 4.1 Detector geometry service: import vendor PC, binning, crop; simulated vs experimental preview/residual.
+- [x] 4.2 Preprocessing pipeline (background removal, normalisation, masks) recorded and reproducible; raw data never modified.
+- [x] 4.3 Symmetry-reduced orientation sampling (orix) with resource estimate (orientations, RAM, disk).
+- [~] 4.4 Bounded-batch dictionary projection per phase (kikuchipy), cache key including detector, grid, preprocessing.
+- [x] 4.5 CPU NCC matcher (NumPy/BLAS), chunked, top-k per phase, deterministic tie policy.
+- [x] 4.6 Phase decision: best score per phase, runner-up, margin, unindexed (low score) and ambiguous (small margin) kept distinct.
+- [x] 4.7 Exports: PNG maps (phase, IPF, score, margin, ambiguity), CSV table, manifest.
+- [x] 4.8 Job system: isolated job folders, status file, logs, progress callback, cancellation; failed/cancelled outputs never promoted.
+- [~] 4.9 CLI `kwb`: `inspect`, `demo`, `index` (config file), `master import`, `cif validate`, `xtal`, `emsoft plan`.
+- [x] 4.10 Offline small CPU demo end-to-end from the bundled Ni master; test asserting exact-grid orientation recovery up to symmetry.
 
 ## Phase 5 — Dictionary and phase validation (milestone 3)
 
-- [ ] 5.1 Optional PyTorch CUDA matcher; Auto/CPU/GPU selection; automatic fallback and batch shrink recorded in manifest.
-- [ ] 5.2 Synthetic two-phase cubic fixture generator (Ni a=3.524 Å vs Cu a=3.615 Å FCC Fm-3m), held-out off-grid orientations, seeds recorded.
-- [ ] 5.3 Identical-master control (must report ambiguity), lattice-parameter sweep, PC offset, noise, binning, angular-step stress tests.
+- [~] 5.1 Optional PyTorch CUDA matcher; Auto/CPU/GPU selection; automatic fallback and batch shrink recorded in manifest.
+- [~] 5.2 Synthetic two-phase cubic fixture generator (Ni a=3.524 Å vs Cu a=3.615 Å FCC Fm-3m), held-out off-grid orientations, seeds recorded.
+- [~] 5.3 Identical-master control (must report ambiguity), lattice-parameter sweep, PC offset, noise, binning, angular-step stress tests.
 - [ ] 5.4 Benchmark scripts producing confusion matrices (incl. ambiguous/unindexed), per-phase recall, coverage vs error, misorientation error, margins, compute cost.
 - [ ] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
 - [ ] 5.6 **[HW]** Measured CPU/GPU parity, throughput, peak RAM/VRAM on a 4 GB CUDA GPU.
@@ -94,7 +94,7 @@ until evidence from a suitable machine is recorded.
 
 - [ ] Native Windows CIF→master run demonstrated **[HW]**
 - [ ] Load-to-export evidence for Oxford and EDAX/TSL **[data]**
-- [ ] CPU cloud demo
+- [~] CPU cloud demo
 - [ ] Measured GPU/CPU parity **[HW]**
 - [ ] Synthetic cubic and real-data benchmark reports
 - [ ] Quick start, vendor export instructions, benchmark reproduction scripts
