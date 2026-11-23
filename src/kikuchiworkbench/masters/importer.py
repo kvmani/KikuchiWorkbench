@@ -71,7 +71,9 @@ def _val(obj, default=None):
     v = obj[()]
     if isinstance(v, np.ndarray):
         if v.dtype.kind == "O":
-            return [x.decode(errors="replace") if isinstance(x, bytes) else x for x in v.ravel()]
+            vals = [x.decode(errors="replace").strip().rstrip("\x00") if isinstance(x, bytes) else x
+                    for x in v.ravel()]
+            return vals[0] if len(vals) == 1 else vals
         if v.size == 1:
             v = v.ravel()[0]
         else:

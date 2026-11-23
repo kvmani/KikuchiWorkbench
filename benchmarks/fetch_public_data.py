@@ -5,6 +5,8 @@
 Datasets (CC-BY-4.0; cite the Zenodo records in any report):
   al_si      Zenodo 20290635  al10si_oxford.zip  (Oxford .ebsp Al-Si scan + EMsoft Al/Si masters)
   ni_master  Zenodo 7498645   ni_mc_mp_20kv.h5   (EMsoft dynamical Ni master, reference projection checks)
+  al_master  Zenodo 7628365   al_mc_mp_20kv.h5   (EMsoft dynamical Al master)
+  si_master  Zenodo 7498729   si_mc_mp_20kv.h5   (EMsoft dynamical Si master)
 """
 
 import argparse
@@ -17,6 +19,8 @@ from pathlib import Path
 DATASETS = {
     "al_si": ("20290635", "al10si_oxford.zip"),
     "ni_master": ("7498645", "ni_mc_mp_20kv.h5"),
+    "al_master": ("7628365", "al_mc_mp_20kv.h5"),
+    "si_master": ("7498729", "si_mc_mp_20kv.h5"),
 }
 
 

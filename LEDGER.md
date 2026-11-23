@@ -211,5 +211,5 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   spread, history and scores recorded in `parameters.pc_calibration`. Config: `calibration: {enabled: true,
   phase: 0, n_points: 16}`.
 - Evidence: synthetic Ni scan with PC offset (+0.015, 0, +0.015): calibrated PC within 0.004 of truth using 6
-  points from a 6° grid (single-stage joint refinement only reached 0.013). `pytest -q` → 109 passed.
+  points from a 6° grid (single-stage joint refinement only reached 0.013). `pytest -q` → 108 passed.
 - Al–Si public dataset downloaded and md5-verified (Zenodo 20290635); Ni reference master download in progress.
