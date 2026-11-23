@@ -1,0 +1,756 @@
+{
+  "kind": "indexing",
+  "run_id": "4aebc26eff1d",
+  "created_utc": "2026-11-23T14:08:51+00:00",
+  "status": "completed",
+  "inputs": {
+    "scan": {
+      "path": "/home/user/kwb_data/al_si/x/al10si_oxford/260d272e-5d2a-4adc-b195-f3230f03ee22.ebsp",
+      "name": "260d272e-5d2a-4adc-b195-f3230f03ee22.ebsp",
+      "size_bytes": 1040339401,
+      "sha256": "7e0d8b2bd6daf59e205b23d468bef8c4468944e8c07b99adf0239eab2715ab76",
+      "summary": {
+        "vendor": "Oxford Instruments",
+        "file_format": "oxford_ebsp",
+        "source_path": "/home/user/kwb_data/al_si/x/al10si_oxford/260d272e-5d2a-4adc-b195-f3230f03ee22.ebsp",
+        "dataset_path": null,
+        "n_points": 75551,
+        "n_valid": 75551,
+        "pattern_shape": [
+          88,
+          156
+        ],
+        "dtype": "uint8",
+        "grid": {
+          "grid_type": "square",
+          "nrows": 251,
+          "ncols": 301,
+          "step_x": 0.020000000000000018,
+          "step_y": 0.020000000000000018,
+          "unit": "um",
+          "scan_order": "row-major, left-to-right, top-to-bottom",
+          "n_points": 75551
+        },
+        "detector": {
+          "pc_bruker_mean": [
+            0.5,
+            0.15,
+            1.25
+          ],
+          "pc_varies": false,
+          "binning": 1,
+          "px_size_um": 1.0,
+          "sample_tilt_deg": 70.0,
+          "detector_tilt_deg": 5.0,
+          "azimuthal_deg": 0.0,
+          "twist_deg": 0.0
+        },
+        "geometry_source": "user",
+        "has_static_background": false,
+        "has_vendor_orientations": false,
+        "warnings": [
+          "Binary .ebsp stores no detector calibration; supply geometry or a companion H5OINA."
+        ],
+        "metadata": {
+          "format": {
+            "file_format": "oxford_ebsp",
+            "vendor": "Oxford Instruments",
+            "version": "4",
+            "scan_groups": [],
+            "pattern_datasets": {},
+            "notes": [
+              "Binary .ebsp stores no detector calibration; supply geometry or a companion H5OINA."
+            ]
+          },
+          "user_geometry": {
+            "pc": [
+              0.5,
+              0.15,
+              1.25
+            ],
+            "pc_convention": "bruker",
+            "tilt": 5.0,
+            "sample_tilt": 70.0
+          }
+        }
+      }
+    },
+    "master_0": {
+      "phase_name": "Al",
+      "sha256": "7f4b03aa5a7d9b9d9896918d2cdc1eb2cc8cd851c25a5db864b4a48eba307b7e",
+      "path": "/home/user/kwb_data/al_master/al_mc_mp_20kv.h5",
+      "space_group": 225,
+      "energy_mode": "single",
+      "energy_keV": 20.0,
+      "energy_weights": null,
+      "info": {
+        "path": "/home/user/kwb_data/al_master/al_mc_mp_20kv.h5",
+        "sha256": "7f4b03aa5a7d9b9d9896918d2cdc1eb2cc8cd851c25a5db864b4a48eba307b7e",
+        "phase_name": "Al",
+        "space_group": 225,
+        "point_group": "m-3m",
+        "crystal_system": 1,
+        "lattice_nm_deg": [
+          0.404,
+          0.404,
+          0.404,
+          90.0,
+          90.0,
+          90.0
+        ],
+        "atom_types": [
+          13
+        ],
+        "energies_keV": [
+          10.0,
+          11.0,
+          12.0,
+          13.0,
+          14.0,
+          15.0,
+          16.0,
+          17.0,
+          18.0,
+          19.0,
+          20.0
+        ],
+        "npx": 500,
+        "projection": "lambert",
+        "hemispheres": [
+          "north",
+          "south"
+        ],
+        "dtype": "float32",
+        "program": "EMEBSDmaster.f90",
+        "emsoft_version": "4_1_0_1e9deab",
+        "sample_tilt_deg": 70.0,
+        "beam_energy_keV": 20.0,
+        "mc_mode": "CSDA",
+        "total_electrons": 2000000000,
+        "energy_weighting_available": true,
+        "nml": {
+          "BetheList": {
+            "c1": 4.0,
+            "c2": 8.0,
+            "c3": 50.0,
+            "sgdbdiff": 1.0
+          },
+          "EBSDMasterNameList": {
+            "Esel": -1,
+            "combinesites": 0,
+            "copyfromenergyfile": "undefined",
+            "dmin": 0.05000000074505806,
+            "energyfile": "al_master_20kv.h5",
+            "latgridtype": "Lambert",
+            "npx": 500,
+            "nthreads": 4,
+            "restart": 0,
+            "stdout": 6,
+            "uniform": 0
+          },
+          "MCCLNameList": {
+            "Ebinsize": 1.0,
+            "Ehistmin": 10.0,
+            "EkeV": 20.0,
+            "MCmode": "CSDA",
+            "dataname": "al_master_20kv.h5",
+            "depthmax": 100.0,
+            "depthstep": 1.0,
+            "devid": 1,
+            "globalworkgrpsz": 150,
+            "mode": "full",
+            "multiplier": 1,
+            "num_el": 10,
+            "numsx": 501,
+            "omega": 0.0,
+            "platid": 1,
+            "sig": 70.0,
+            "stdout": 6,
+            "totnum_el": 2000000000,
+            "xtalname": "al.xtal"
+          }
+        },
+        "checks": [
+          "Lambert projection, 2 hemisphere(s), 11 energy bin(s)",
+          "finite, non-constant intensities",
+          "space group 225, lattice (nm, deg) [0.404, 0.404, 0.404, 90.0, 90.0, 90.0]"
+        ],
+        "warnings": []
+      }
+    },
+    "master_1": {
+      "phase_name": "Si",
+      "sha256": "a946db492b2135f239a4ee251662873d3fee9769293f015a793bed30ece41a4b",
+      "path": "/home/user/kwb_data/si_master/si_mc_mp_20kv.h5",
+      "space_group": 227,
+      "energy_mode": "single",
+      "energy_keV": 20.0,
+      "energy_weights": null,
+      "info": {
+        "path": "/home/user/kwb_data/si_master/si_mc_mp_20kv.h5",
+        "sha256": "a946db492b2135f239a4ee251662873d3fee9769293f015a793bed30ece41a4b",
+        "phase_name": "Si",
+        "space_group": 227,
+        "point_group": "m-3m",
+        "crystal_system": 1,
+        "lattice_nm_deg": [
+          0.54307,
+          0.54307,
+          0.54307,
+          90.0,
+          90.0,
+          90.0
+        ],
+        "atom_types": [
+          14
+        ],
+        "energies_keV": [
+          5.0,
+          6.0,
+          7.0,
+          8.0,
+          9.0,
+          10.0,
+          11.0,
+          12.0,
+          13.0,
+          14.0,
+          15.0,
+          16.0,
+          17.0,
+          18.0,
+          19.0,
+          20.0
+        ],
+        "npx": 500,
+        "projection": "lambert",
+        "hemispheres": [
+          "north",
+          "south"
+        ],
+        "dtype": "float32",
+        "program": "EMEBSDmaster.f90",
+        "emsoft_version": "5_0_20191024_0",
+        "sample_tilt_deg": 70.0,
+        "beam_energy_keV": 20.0,
+        "mc_mode": "CSDA",
+        "total_electrons": 2000000000,
+        "energy_weighting_available": true,
+        "nml": {
+          "BetheList": {
+            "c1": 4.0,
+            "c2": 8.0,
+            "c3": 50.0,
+            "sgdbdiff": 1.0
+          },
+          "EBSDMasterNameList": {
+            "BetheParametersFile": "BetheParameters.nml",
+            "Esel": -1,
+            "combinesites": 0,
+            "copyfromenergyfile": "undefined",
+            "dmin": 0.05000000074505806,
+            "energyfile": "crystal_data/si/si_mc_mp_20kv.h5",
+            "latgridtype": "Lambert",
+            "npx": 500,
+            "nthreads": 20,
+            "restart": 0,
+            "stdout": 6,
+            "uniform": 0
+          },
+          "MCCLNameList": {
+            "Ebinsize": 1.0,
+            "Ehistmin": 5.0,
+            "EkeV": 20.0,
+            "MCmode": "CSDA",
+            "dataname": "crystal_data/si/si_mc_mp_20kv.h5",
+            "depthmax": 100.0,
+            "depthstep": 1.0,
+            "devid": 1,
+            "globalworkgrpsz": 150,
+            "mode": "full",
+            "multiplier": 1,
+            "num_el": 10,
+            "numsx": 501,
+            "omega": 0.0,
+            "platid": 1,
+            "sig": 70.0,
+            "stdout": 6,
+            "totnum_el": 2000000000,
+            "xtalname": "si/si.xtal"
+          }
+        },
+        "checks": [
+          "Lambert projection, 2 hemisphere(s), 16 energy bin(s)",
+          "finite, non-constant intensities",
+          "space group 227, lattice (nm, deg) [0.54307, 0.54307, 0.54307, 90.0, 90.0, 90.0]"
+        ],
+        "warnings": []
+      }
+    }
+  },
+  "conventions": {
+    "pc_internal": "bruker (kikuchipy)",
+    "pc_definition": {
+      "pcx": "fraction of detector width from left edge (column 0)",
+      "pcy": "fraction of detector height from top edge (row 0)",
+      "pcz": "detector distance as fraction of detector height"
+    },
+    "detector_pixels": "patterns[..., row, col]; row increases down, col increases right",
+    "rotation": {
+      "euler": "Bunge ZXZ (phi1, Phi, phi2)",
+      "direction": "passive: sample frame -> crystal frame (orix/MTEX convention)",
+      "sample_frame": "kikuchipy/EDAX-style: X right (RD), Y down (TD), Z into sample (ND)",
+      "export_units": "degrees"
+    },
+    "units": {
+      "angles_export": "degrees",
+      "length": "micrometre",
+      "voltage": "kV"
+    }
+  },
+  "parameters": {
+    "config": {
+      "scan": {
+        "path": "/home/user/kwb_data/al_si/x/al10si_oxford/260d272e-5d2a-4adc-b195-f3230f03ee22.ebsp",
+        "geometry": {
+          "pc": [
+            0.5,
+            0.15,
+            1.25
+          ],
+          "pc_convention": "bruker",
+          "tilt": 5.0,
+          "sample_tilt": 70.0
+        }
+      },
+      "phases": [
+        {
+          "master": "/home/user/kwb_data/al_master/al_mc_mp_20kv.h5",
+          "name": "Al",
+          "energy": 20.0
+        },
+        {
+          "master": "/home/user/kwb_data/si_master/si_mc_mp_20kv.h5",
+          "name": "Si",
+          "energy": 20.0
+        }
+      ],
+      "sampling": {
+        "resolution_deg": 3.0
+      },
+      "preprocessing": [
+        {
+          "op": "static_background",
+          "mode": "subtract",
+          "source": "scan_mean"
+        },
+        {
+          "op": "dynamic_background",
+          "sigma_frac": 0.125,
+          "mode": "subtract"
+        },
+        {
+          "op": "bin",
+          "factor": 2
+        }
+      ],
+      "matching": {
+        "backend": "auto",
+        "cache_dictionary": true,
+        "dictionary_chunk": 4000
+      },
+      "decision": {
+        "min_score": 0.1,
+        "ambiguity_margin": 0.005,
+        "provenance": "provisional defaults; not calibrated for Al-Si"
+      },
+      "output": {},
+      "refinement": {
+        "enabled": true,
+        "maxeval": 300
+      },
+      "calibration": {
+        "enabled": true,
+        "phase": 0,
+        "n_points": 12,
+        "resolution_deg": 4.0,
+        "pc_trust": 0.1
+      },
+      "roi": [
+        100,
+        120,
+        100,
+        125
+      ],
+      "allow_placeholder_geometry": false
+    },
+    "pc_calibration": {
+      "reference_phase": "Al",
+      "points": [
+        0,
+        37,
+        43,
+        74,
+        126,
+        143,
+        234,
+        249,
+        324,
+        340,
+        350,
+        360
+      ],
+      "pc_bruker_start": [
+        0.5,
+        0.15,
+        1.25
+      ],
+      "pc_bruker": [
+        0.5099550452009118,
+        0.13714336453668616,
+        1.2475151884487614
+      ],
+      "pc_spread_std": [
+        0.004115794471819982,
+        0.014910918506384183,
+        0.00919810135367442
+      ],
+      "per_point_pc": [
+        [
+          0.501913580354546,
+          0.1397872264432173,
+          1.2467447221323815
+        ],
+        [
+          0.5105632378229689,
+          0.11554612893547136,
+          1.2525336194187942
+        ],
+        [
+          0.5027366817067311,
+          0.13798410222134283,
+          1.2484811925462433
+        ],
+        [
+          0.5099550452009118,
+          0.13211778569067767,
+          1.2721165812566808
+        ],
+        [
+          0.5037482977165921,
+          0.13743942132591758,
+          1.253697453267446
+        ],
+        [
+          0.5121515786273543,
+          0.12264289758111774,
+          1.2441219200139129
+        ],
+        [
+          0.5020101648284969,
+          0.13714336453668616,
+          1.2475151884487614
+        ],
+        [
+          0.5054428086889273,
+          0.1406691287147876,
+          1.2451655612848396
+        ],
+        [
+          0.5102605755365867,
+          0.13870703018356478,
+          1.2511418717369578
+        ],
+        [
+          0.513207112554278,
+          0.09275550981573664,
+          1.236712503893218
+        ],
+        [
+          0.497143794876724,
+          0.13921053631960287,
+          1.2582866406706419
+        ],
+        [
+          0.5031861852504788,
+          0.1380557650520528,
+          1.2447228499907512
+        ]
+      ],
+      "scores": [
+        0.15977029502391815,
+        0.2623724043369293,
+        0.37313181161880493,
+        0.4289223253726959,
+        0.13768485188484192,
+        0.33905816078186035,
+        0.29159247875213623,
+        0.28665876388549805,
+        0.30641263723373413,
+        0.39781278371810913,
+        0.1502656787633896,
+        0.35101285576820374
+      ],
+      "n_used": 9,
+      "pc_history": [
+        [
+          0.5,
+          0.15,
+          1.25
+        ],
+        [
+          0.5008951544594236,
+          0.13805494092004034,
+          1.2510647371422898
+        ],
+        [
+          0.5024110305606428,
+          0.1376018800147737,
+          1.2485476887727254
+        ],
+        [
+          0.5099550452009118,
+          0.13714336453668616,
+          1.2475151884487614
+        ]
+      ],
+      "settings": {
+        "resolution_deg": 4.0,
+        "pc_trust": 0.1,
+        "angle_trust_deg": 2.0,
+        "maxeval": 1500,
+        "iterations": 3,
+        "method": "Nelder-Mead (kikuchipy joint orientation+PC)"
+      }
+    },
+    "preprocessing": {
+      "steps": [
+        {
+          "op": "static_background",
+          "mode": "subtract",
+          "source": "scan_mean"
+        },
+        {
+          "op": "dynamic_background",
+          "sigma_frac": 0.125,
+          "mode": "subtract"
+        },
+        {
+          "op": "bin",
+          "factor": 2
+        }
+      ],
+      "pattern_shape_in": [
+        88,
+        156
+      ],
+      "pattern_shape_out": [
+        44,
+        78
+      ],
+      "mask_pixels": 3432,
+      "notes": [
+        "static background = mean of 500 patterns (seed 0)"
+      ],
+      "static_background_sha256": "14e9f8b7db44344fb47405a4c2bb4fe257a9d00f21378671508aae524990f0ce"
+    },
+    "detector_used": {
+      "shape": [
+        44,
+        78
+      ],
+      "pc": [
+        0.509955,
+        0.137143,
+        1.247515
+      ],
+      "binning": 2,
+      "px_size": 1.0,
+      "tilt": 5.0,
+      "azimuthal": 0.0,
+      "twist": 0.0,
+      "sample_tilt": 70.0
+    },
+    "detector_projection": {
+      "shape": [
+        88,
+        156
+      ],
+      "pc": [
+        0.509955,
+        0.137143,
+        1.247515
+      ],
+      "binning": 1,
+      "px_size": 1.0,
+      "tilt": 5.0,
+      "azimuthal": 0.0,
+      "twist": 0.0,
+      "sample_tilt": 70.0
+    },
+    "sampling": {
+      "resolution_deg": 3.0,
+      "method": "cubochoric",
+      "n_orientations": {
+        "Al": 30443,
+        "Si": 30443
+      },
+      "estimate_formula_count": {
+        "Al": 29783,
+        "Si": 29783
+      }
+    },
+    "resources_estimate": {
+      "n_patterns": 500,
+      "n_orientations": {
+        "Al": 30443,
+        "Si": 30443
+      },
+      "pattern_pixels": 3432,
+      "dictionary_chunk": 4000,
+      "pattern_chunk": 2048,
+      "peak_ram_bytes": 214913904,
+      "dictionary_disk_bytes": 835843008,
+      "peak_ram_GB": 0.215,
+      "dictionary_disk_GB_if_cached": 0.836
+    },
+    "matching": {
+      "backend": "auto",
+      "top_k": 5,
+      "dictionary_chunk": 4000,
+      "pattern_chunk": 2048,
+      "cache_dictionary": true,
+      "backend_used": "cpu",
+      "pattern_chunk_final": 2048,
+      "score": "NCC (zero-mean, unit-norm dot product, float32)",
+      "tie_policy": "descending score, then ascending dictionary index",
+      "coverage": "identical sampling resolution and method for all phases"
+    },
+    "refinement": {
+      "budget": {
+        "method": "minimize",
+        "method_kwargs": {
+          "method": "Nelder-Mead"
+        },
+        "trust_region_deg": 3.0,
+        "rtol": 0.0001,
+        "maxeval": 300,
+        "n_starts": 1
+      },
+      "mean_evaluations_per_pattern": {
+        "Al": 93.326,
+        "Si": 91.49
+      },
+      "time_s": {
+        "Al": 7.8649632530004965,
+        "Si": 8.581587805000709
+      },
+      "equal_budget": true,
+      "geometry": "fixed detector PC shared by all phases"
+    }
+  },
+  "software": {
+    "python": "3.13.18",
+    "kikuchiworkbench": "0.1.0.dev0",
+    "kikuchipy": "0.14.2",
+    "orix": "0.15.0",
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "h5py": "3.16.0",
+    "diffpy.structure": "3.5.1",
+    "matplotlib": "3.11.2",
+    "PySide6": "6.12.0",
+    "torch": null
+  },
+  "hardware": {
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "cpu_count": 4,
+    "blas": "scipy-openblas"
+  },
+  "thresholds": {
+    "min_score": 0.1,
+    "ambiguity_margin": 0.005,
+    "tie_tolerance": 1e-06,
+    "min_signal": null,
+    "provenance": "provisional defaults; not calibrated for Al-Si",
+    "met_error_target_on_dev": null
+  },
+  "events": [
+    {
+      "time_utc": "2026-11-23T14:08:54+00:00",
+      "kind": "roi",
+      "message": "ROI [100, 120, 100, 125]: 500 of 75551 points"
+    },
+    {
+      "time_utc": "2026-11-23T14:09:14+00:00",
+      "kind": "pc_calibration",
+      "message": "PC calibrated on 9 points with Al: [0.51, 0.1371, 1.2475] (start [0.5, 0.15, 1.25], spread [0.0041, 0.0149, 0.0092]); shared by all phases"
+    },
+    {
+      "time_utc": "2026-11-23T14:09:18+00:00",
+      "kind": "backend",
+      "message": "No CUDA device available; using CPU"
+    },
+    {
+      "time_utc": "2026-11-23T14:09:39+00:00",
+      "kind": "dictionary_cache",
+      "message": "Al: dictionary cache miss (built)",
+      "key": "e12d031372e20e39e8f83c7ad0447034"
+    },
+    {
+      "time_utc": "2026-11-23T14:10:02+00:00",
+      "kind": "dictionary_cache",
+      "message": "Si: dictionary cache miss (built)",
+      "key": "a81e89b26c7cc1a3d8cd446930116520"
+    },
+    {
+      "time_utc": "2026-11-23T14:10:02+00:00",
+      "kind": "warning",
+      "message": "Refinement projects at the binned detector resolution."
+    },
+    {
+      "time_utc": "2026-11-23T14:10:19+00:00",
+      "kind": "refinement",
+      "message": "Refined all phases with equal budget {'method': 'minimize', 'method_kwargs': {'method': 'Nelder-Mead'}, 'trust_region_deg': 3.0, 'rtol': 0.0001, 'maxeval': 300, 'n_starts': 1}"
+    }
+  ],
+  "results": {
+    "counts": {
+      "indexed": 493,
+      "ambiguous": 7,
+      "unindexed": 0,
+      "low_signal": 0,
+      "missing": 0
+    },
+    "n_points": 500,
+    "timings": {
+      "preprocess_s": 0.859333303999847,
+      "projection_s": 43.64065680599742,
+      "matching_s": 0.7039580240025316,
+      "refinement_s": 17.25568961799945,
+      "total_s": 88.83503951900002,
+      "patterns_per_s": 11.275326258144444
+    },
+    "score_summary": {
+      "Al": {
+        "median_best": 0.24966129660606384
+      },
+      "Si": {
+        "median_best": 0.20953623950481415
+      }
+    }
+  },
+  "outputs": {
+    "phase_map": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/phase_map.png",
+    "ipf_z_map": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/ipf_z_map.png",
+    "score_map": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/score_map.png",
+    "margin_map": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/margin_map.png",
+    "signal_map": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/signal_map.png",
+    "table_csv": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/results.csv",
+    "results_h5": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f/outputs/results.h5"
+  },
+  "schema_version": "1.0",
+  "workbench_version": "0.1.0.dev0"
+}

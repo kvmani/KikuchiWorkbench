@@ -7,7 +7,7 @@ known software version. Release requires real exports for both vendors (roadmap 
 | Vendor | Format | Variants handled | Geometry source | Verification so far |
 | --- | --- | --- | --- | --- |
 | Oxford | H5OINA (`.h5oina`) | format version from `Format Version`; raw `Unprocessed Patterns` preferred, `Processed Patterns` fallback (warned); per-point PC averaged for the dictionary (spread recorded) | file (Oxford PC → Bruker) | structural; **real export: pending** |
-| Oxford | `.ebsp` | versions 0–5 via kikuchipy; missing patterns handled by kikuchipy | user `--pc` or companion H5OINA | sample; public Al–Si export (in progress) |
+| Oxford | `.ebsp` | versions 0–5 via kikuchipy; missing patterns handled by kikuchipy | user `--pc` or companion H5OINA | sample; **public real export** (Al–10Si, Oxford Symmetry S2 "Speed 3" 88×156 px, 251×301 points, Zenodo 20290635): loaded, calibrated, indexed and exported (see benchmark report). AZtec version of the export not stated in the record. |
 | EDAX/TSL | H5EBSD (`.h5`, `.oh5`) | OIM leading-space top-level keys; `SqrGrid` and `HexGrid`; file X/Y positions preserved | file `Pattern Center Calibration` (TSL → Bruker); zeros flagged missing | sample + structural; **real export: pending**; hexagonal layout assumption unverified |
 | EDAX/TSL | `.up1` / `.up2` | version 1 (needs nav shape), version ≥ 3 (grid in header, hex flag); version 2 rejected | user `--pc` | sample + structural; **real export: pending** |
 | EMsoft | simulated EBSD HDF5 | `EMData/EBSD/EBSDPatterns` with Euler angles | file (EMsoft PC) | sample |

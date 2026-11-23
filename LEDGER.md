@@ -213,3 +213,19 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Evidence: synthetic Ni scan with PC offset (+0.015, 0, +0.015): calibrated PC within 0.004 of truth using 6
   points from a 6° grid (single-stage joint refinement only reached 0.013). `pytest -q` → 108 passed.
 - Al–Si public dataset downloaded and md5-verified (Zenodo 20290635); Ni reference master download in progress.
+
+## 2026-11-23 — Entry 12: First real-data run (Oxford Al–10Si .ebsp)
+
+- Downloaded and md5-verified (Zenodo, CC-BY-4.0): Al–10Si `.ebsp` (20290635), EMsoft Al master (7628365, EMsoft
+  4.1), EMsoft Si master (7498729, EMsoft 5.0), EMsoft Ni master (7498645). All load and pass master verification
+  (fixed: variable-length string metadata shown as lists).
+- `kwb inspect` on the real `.ebsp`: 251 × 301 points, 88 × 156 px uint8, 0.02 µm step, geometry flagged missing
+  (correct: `.ebsp` holds no calibration).
+- `benchmarks/real_al_si.py` (shared core end to end): authors' starting PC → shared Al calibration → Al + Si
+  dictionaries (equal 2.5° sampling) → NCC → equal-budget refinement → maps/CSV/HDF5/manifest. 3000-point ROI:
+  2974 indexed, 26 ambiguous (on particle boundaries), Al 0.73 / Si 0.27, median NCC 0.38, 205 s on 4 CPUs. Maps
+  show Si particles with single orientations in an Al matrix. Results in
+  `benchmarks/results/real_al_si_2026-11-23_roi{500,3000}/`, summary in `docs/benchmark_report.md`.
+- Limitations: phase accuracy not measured (no reference); comparison with published Oxford results pending (not
+  in the record); 9-point PC calibration repeatability ~0.01 between ROIs. EDAX/TSL real export still needed.
+- Next: Ni reference-master projection check (dynamical EMsoft vs kinematical), Windows/CUDA hand-off notes.

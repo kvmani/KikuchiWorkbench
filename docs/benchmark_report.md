@@ -79,3 +79,29 @@ except isolated points (≤ 2 of 196) in `pc_error_0.01` and `step_3deg`.
 Kinematical masters only; one detector geometry; 196 points per scan (statistical uncertainty of a few percent);
 synthetic noise model; refinement uses kikuchipy's projection at the binned resolution; compute times are from a
 4-core container (≈ 6–9 s per refined condition). Not evidence about real Ni/Cu or the lab's phases.
+
+# Real-data interoperability — public Oxford Al–10Si `.ebsp` (interim)
+
+Data: Zenodo 20290635 (scan, Oxford Symmetry S2, 75,551 patterns of 88 × 156 px, 20 nm step), EMsoft dynamical
+masters Al (Zenodo 7628365, EMsoft 4.1) and Si (Zenodo 7498729, EMsoft 5.0), 20 keV slice; all CC-BY-4.0.
+Reproduce: `python benchmarks/fetch_public_data.py al_si al_master si_master` then
+`python benchmarks/real_al_si.py --roi 90 140 90 150 --resolution 2.5`.
+
+Workflow: `.ebsp` has no calibration → starting PC from the dataset authors' notebook (Bruker (0.50, 0.15, 1.25),
+detector tilt 5°) → shared calibration on 9 Al points → Al and Si dictionaries at the same 2.5° sampling on 2×-binned
+patterns → NCC → equal-budget refinement → decision (provisional thresholds).
+
+| ROI (rows, cols) | Points | Indexed | Ambiguous | Al / Si of indexed | Calibrated PC (Bruker) | Median NCC | Time (4 CPU) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 100–120, 100–125 (3° grid) | 500 | 493 | 7 | 0.62 / 0.38 | (0.510, 0.137, 1.248) | 0.27 | 89 s |
+| 90–140, 90–150 (2.5° grid) | 3000 | 2974 | 26 | 0.73 / 0.27 | (0.501, 0.147, 1.252) | 0.38 | 205 s |
+
+![Al–Si ROI maps](images/real_al_si_roi3000.png)
+
+Observations: rounded Si particles with one orientation each in an Al matrix; ambiguous pixels lie on phase
+boundaries (overlapping patterns); Al/Si phase margins are up to ~0.2 NCC, about 100× the synthetic Ni/Cu margins.
+
+Limitations: no independent reference (EDS or vendor phase map) for this ROI, so phase-label accuracy is **not
+measured**; the comparison with published results asked for by the scope is pending (the authors' notebook stores
+no numeric outputs, and Oxford's own indexing is not in the record). PC calibration from 9 points differed by up to
+0.01 between ROIs — use more points or a plane fit before quantitative work. Thresholds are provisional.

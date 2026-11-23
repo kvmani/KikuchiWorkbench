@@ -21,7 +21,6 @@ from .preprocessing import signal_metric
 
 def choose_calibration_points(scan, preprocessor, n_points: int = 16, seed: int = 0) -> np.ndarray:
     """Pick up to ``n_points`` high-signal points spread over the map (one per grid cell)."""
-    n = scan.n_points
     rr, cc = scan.map_indices()
     k = int(np.ceil(np.sqrt(n_points)))
     cell = (np.minimum(rr * k // max(1, scan.grid.nrows), k - 1) * k

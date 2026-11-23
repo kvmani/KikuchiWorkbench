@@ -1,0 +1,57 @@
+{
+  "job": "/tmp/claude-0/-home-user-KikuchiWorkbench/c1a551ef-2198-594c-94a2-7b19cd548dd2/scratchpad/realjobs/20261123-140850_indexing_4f594f",
+  "roi": [
+    100,
+    120,
+    100,
+    125
+  ],
+  "n_points": 500,
+  "counts": {
+    "indexed": 493,
+    "ambiguous": 7,
+    "unindexed": 0,
+    "low_signal": 0,
+    "missing": 0
+  },
+  "phase_fraction_of_indexed": {
+    "Al": 0.6166328600405679,
+    "Si": 0.38336713995943206
+  },
+  "pc_calibration": {
+    "pc_bruker_start": [
+      0.5,
+      0.15,
+      1.25
+    ],
+    "pc_bruker": [
+      0.5099550452009118,
+      0.13714336453668616,
+      1.2475151884487614
+    ],
+    "pc_spread_std": [
+      0.004115794471819982,
+      0.014910918506384183,
+      0.00919810135367442
+    ],
+    "n_used": 9
+  },
+  "median_best_ncc": 0.27463945746421814,
+  "timings": {
+    "preprocess_s": 0.859333303999847,
+    "projection_s": 43.64065680599742,
+    "matching_s": 0.7039580240025316,
+    "refinement_s": 17.25568961799945,
+    "total_s": 88.83503951900002,
+    "patterns_per_s": 11.275326258144444
+  },
+  "events": [
+    "ROI [100, 120, 100, 125]: 500 of 75551 points",
+    "PC calibrated on 9 points with Al: [0.51, 0.1371, 1.2475] (start [0.5, 0.15, 1.25], spread [0.0041, 0.0149, 0.0092]); shared by all phases",
+    "No CUDA device available; using CPU",
+    "Al: dictionary cache miss (built)",
+    "Si: dictionary cache miss (built)",
+    "Refinement projects at the binned detector resolution.",
+    "Refined all phases with equal budget {'method': 'minimize', 'method_kwargs': {'method': 'Nelder-Mead'}, 'trust_region_deg': 3.0, 'rtol': 0.0001, 'maxeval': 300, 'n_starts': 1}"
+  ]
+}

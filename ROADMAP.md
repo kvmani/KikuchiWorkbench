@@ -70,7 +70,7 @@ until evidence from a suitable machine is recorded.
 - [x] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
 - [x] 5.8 Equal-budget orientation refinement per phase (needed: grid error swamps the Ni/Cu score difference).
 - [ ] 5.6 **[HW]** Measured CPU/GPU parity, throughput, peak RAM/VRAM on a 4 GB CUDA GPU.
-- [ ] 5.7 **[HW/data]** Real-data interoperability: public Oxford Al–Si `.ebsp` + EMsoft Al/Si masters; TSL scan.
+- [~] 5.7 **[HW/data]** Real-data interoperability: public Oxford Al–Si `.ebsp` + EMsoft Al/Si masters; TSL scan.
 
 ## Phase 6 — Desktop GUI (milestone 4)
 
@@ -94,7 +94,7 @@ until evidence from a suitable machine is recorded.
 ## Release-candidate gate (from AGENTS.md)
 
 - [ ] Native Windows CIF→master run demonstrated **[HW]**
-- [ ] Load-to-export evidence for Oxford and EDAX/TSL **[data]**
+- [~] Load-to-export evidence for Oxford and EDAX/TSL **[data]** (Oxford public .ebsp done; EDAX/TSL pending)
 - [~] CPU cloud demo
 - [ ] Measured GPU/CPU parity **[HW]**
 - [~] Synthetic cubic and real-data benchmark reports (synthetic kinematical interim report done)
