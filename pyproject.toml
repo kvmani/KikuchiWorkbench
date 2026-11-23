@@ -28,6 +28,9 @@ dev = ["pytest>=8", "ruff>=0.5"]
 [project.scripts]
 kwb = "kikuchiworkbench.cli:main"
 
+[project.gui-scripts]
+kwb-gui = "kikuchiworkbench.gui.main_window:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

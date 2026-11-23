@@ -111,3 +111,23 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   CI has not run yet at the time of writing (check the Actions tab after push).
 - `docs/THIRD_PARTY.md`: dependency licences (GPL-3.0 kikuchipy/orix affects bundling), test-data provenance.
 - Next: PySide6 GUI skeleton on the shared core (6.1–6.3, 6.7), then benchmark scripts (5.2–5.4).
+
+## 2026-11-23 — Entry 6: PySide6 GUI skeleton on the shared core
+
+- `gui/main_window.py`: six guided steps (scan, phases, masters, geometry, build & match, inspect & export), log
+  panel, progress bar, cancel button. Scan page: summary, warnings, mean-intensity map, raw vs preprocessed pattern.
+  Phase page: master verification report, CIF validation messages (kinematical masters tagged). Masters page:
+  EMsoft generation (needs `KWB_EMSOFT_BIN`) or kinematical (labelled synthetic). Geometry page: editable Bruker
+  PC/tilt/binning recorded as user geometry; experimental vs simulated vs residual after an ROI run. Index page:
+  resolution, device, thresholds, ROI preview, resource estimate. Results page: phase / IPF-Z / score / margin /
+  signal maps, click a pixel → candidate table (all phases, top-k) + measured and best simulated pattern per phase,
+  live ambiguity threshold (re-decision without re-matching), export (PNG, CSV, HDF5, manifest).
+- `gui/workers.py`: QThread workers; results delivered through bound slots (queued to the GUI thread).
+  Two crashes found and fixed: PySide double deletion (`deleteLater` + GC) and GUI updates from the worker thread
+  via lambda connections.
+- Core additions: `IndexingResult.redecide/measured_pattern/simulated_pattern/candidates`.
+- Entry points: `kwb-gui`, `kwb gui`. Screenshot: `docs/images/gui_results_example.png` (offscreen, Linux).
+- Evidence: offscreen GUI tests (load example in worker → ROI index → inspect pixel → change threshold → export;
+  cancel mid-run → no result) pass. `pytest -q` → 101 passed. Linux container needed `libegl1` etc.; CI installs them.
+- Not verified: Windows GUI launch (6.8, needs Windows runner/workstation — CI windows job will be the first check).
+- Next: check CI results; benchmark scripts for the controlled cubic study (5.2–5.5); quick start docs.

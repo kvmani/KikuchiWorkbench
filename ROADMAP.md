@@ -73,13 +73,13 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 6 — Desktop GUI (milestone 4)
 
-- [ ] 6.1 PySide6 guided workflow shell (6 steps) calling the shared core; advanced settings expandable.
-- [ ] 6.2 Worker threads with progress, cancel and log panel; GUI stays responsive.
-- [ ] 6.3 Scan view: map grid, pattern preview raw/preprocessed side by side.
-- [ ] 6.4 Phase view: crystal summary and validation messages.
-- [ ] 6.5 Geometry check: experimental vs simulated overlay/residual.
-- [ ] 6.6 Results: phase/IPF/score/margin maps, pixel picker with per-phase candidates and best simulated pattern, threshold slider, export.
-- [ ] 6.7 Offscreen GUI smoke test in CI.
+- [~] 6.1 PySide6 guided workflow shell (6 steps) calling the shared core; advanced settings expandable.
+- [x] 6.2 Worker threads with progress, cancel and log panel; GUI stays responsive.
+- [x] 6.3 Scan view: map grid, pattern preview raw/preprocessed side by side.
+- [x] 6.4 Phase view: crystal summary and validation messages.
+- [~] 6.5 Geometry check: experimental vs simulated overlay/residual.
+- [~] 6.6 Results: phase/IPF/score/margin maps, pixel picker with per-phase candidates and best simulated pattern, threshold slider, export.
+- [x] 6.7 Offscreen GUI smoke test in CI.
 - [ ] 6.8 **[HW]** Windows GUI launch + bundled demo smoke test; offline installer / portable bundle.
 
 ## Phase 7 — Documentation and release

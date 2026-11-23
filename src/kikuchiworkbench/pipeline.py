@@ -120,9 +120,52 @@ class IndexingResult:
     job_dir: str | None = None
     timings: dict = field(default_factory=dict)
 
+    context: dict = field(default_factory=dict, repr=False)  # in-memory only (not exported)
+
     @property
     def n_points(self) -> int:
         return int(self.per_phase_best.shape[0])
+
+    def redecide(self, policy: DecisionPolicy) -> PhaseDecision:
+        """Re-apply a decision policy (e.g. a new reporting threshold) without re-matching."""
+        valid = self.context["scan"].valid if "scan" in self.context else None
+        self.decision = decide(self.per_phase_best, policy, signal=self.signal, valid=valid)
+        if self.manifest is not None:
+            self.manifest.thresholds = policy.to_dict()
+            self.manifest.results["counts"] = self.decision.counts()
+        return self.decision
+
+    def measured_pattern(self, i: int, preprocessed: bool = True) -> np.ndarray:
+        scan = self.context["scan"]
+        raw = scan.get_patterns(i, i + 1)
+        if not preprocessed:
+            return raw[0]
+        return self.context["preprocessor"].apply_experimental(raw)[0]
+
+    def simulated_pattern(self, i: int, phase: int, rank: int = 0) -> np.ndarray | None:
+        """Best (or rank-th) simulated pattern of ``phase`` for point ``i``."""
+        from orix.quaternion import Rotation
+
+        q = self.topk_quaternion[phase][i, rank]
+        if not np.all(np.isfinite(q)):
+            return None
+        proj = DictionaryProjector(self.context["masters"][phase].signal, self.context["detector"],
+                                   self.context["preprocessor"])
+        return proj.project(Rotation(q[None]), normalise=False)[0]
+
+    def candidates(self, i: int) -> list[dict]:
+        from orix.quaternion import Rotation
+
+        out = []
+        eul = [np.rad2deg(Rotation(q[i]).to_euler()) for q in self.topk_quaternion]
+        for p, name in enumerate(self.phase_names):
+            for r in range(self.topk_scores[p].shape[1]):
+                s = float(self.topk_scores[p][i, r])
+                if not np.isfinite(s):
+                    continue
+                out.append({"phase": name, "phase_index": p, "rank": r, "score": s,
+                            "euler_deg": [float(v) for v in eul[p][r]]})
+        return sorted(out, key=lambda d: (-d["score"], d["phase_index"], d["rank"]))
 
     @property
     def best_quaternion(self) -> list[np.ndarray]:
@@ -349,6 +392,7 @@ def run_indexing(
         signal=sig,
         point_index=idx,
         manifest=manifest,
+        context={"scan": work_scan, "masters": masters, "detector": proj_det, "preprocessor": pre},
         job_dir=str(job.path) if job else None,
     )
     timings["total_s"] = time.perf_counter() - t_start

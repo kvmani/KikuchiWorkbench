@@ -277,6 +277,9 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("--quiet", action="store_true")
     d.set_defaults(fn=cmd_demo)
 
+    g = sub.add_parser("gui", help="start the desktop GUI")
+    g.set_defaults(fn=lambda a: __import__("kikuchiworkbench.gui.main_window", fromlist=["main"]).main([]))
+
     e = sub.add_parser("emsoft", help="EMsoft simulation jobs")
     esub = e.add_subparsers(dest="emsoft_cmd", required=True)
     ep = esub.add_parser("plan", help="write EMsoft inputs for CIF -> MC -> master (no execution)")
