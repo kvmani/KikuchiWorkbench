@@ -204,3 +204,23 @@ def test_shared_pc_calibration(ni):
     assert len(cal["points"]) <= 9
     assert r.context["scan"].geometry_source == "calibrated"
     assert any(e["kind"] == "pc_calibration" for e in r.manifest.events)
+
+
+def test_per_point_pc_is_approximated_and_warned(ni):
+    from dataclasses import replace
+
+    from kikuchiworkbench.io.readers import _detector
+
+    path, m = ni
+    scan, _ = make_synthetic_scan([m], SyntheticSpec(nrows=2, ncols=3, seed=41))
+    d = scan.detector
+    pcs = np.tile(np.asarray(d.pc_average).ravel(), (6, 1))
+    pcs[:, 0] += np.linspace(-0.01, 0.01, 6)  # varying PCx across the scan
+    varying = replace(scan, detector=_detector(shape=d.shape, pc=pcs, binning=d.binning, px_size=d.px_size,
+                                               sample_tilt=d.sample_tilt))
+    r = run_indexing(_cfg([path]), scan=varying, masters=[m], export=False)
+    kinds = [e["kind"] for e in r.manifest.events]
+    assert "pc_approximation" in kinds
+    assert any("exceeds" in e["message"] for e in r.manifest.events if e["kind"] == "warning")
+    ev = next(e for e in r.manifest.events if e["kind"] == "pc_approximation")
+    assert ev["max_abs_deviation"] == pytest.approx(0.01, abs=1e-9)

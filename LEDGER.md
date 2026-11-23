@@ -252,3 +252,7 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Next: confirm CI green; GUI polish (hexagonal map display, calibration controls in step 4).
 - GUI step 4: "Calibrate PC on the first phase (shared by all phases)" runs the shared calibration in a worker,
   applies the median PC to the scan and shows start/result/spread; offscreen GUI test extended (passes).
+- **Bug fixed:** a scan with per-point PC variation (e.g. a real H5OINA) crashed indexing with a `TypeError` (dict
+  passed positionally to `log_event`). Untested path until now; added a test with varying PC. A warning is now
+  issued when the PC spread exceeds 0.005 (configurable `matching.pc_spread_warning`) recommending a smaller ROI or
+  region-specific dictionaries.

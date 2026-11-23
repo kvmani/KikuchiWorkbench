@@ -107,6 +107,9 @@ class IndexingConfig:
         return d
 
 
+# Max |PC - mean PC| (Bruker units) tolerated before warning that one dictionary is a poor approximation.
+PC_SPREAD_WARNING = 0.005
+
 MATCHING_DEFAULTS = {"backend": "auto", "top_k": 5, "dictionary_chunk": 2000, "pattern_chunk": 2048}
 
 
@@ -334,9 +337,13 @@ def run_indexing(
 
     # ---- geometry and preprocessing
     det_raw, spread = single_pc_detector(work_scan.detector)
+    pc_tol = float((config.matching or {}).get("pc_spread_warning", PC_SPREAD_WARNING))
     if spread > 0:
         events("pc_approximation", f"Scan PC varies by up to {spread:.4f} (Bruker units); dictionary "
-               "uses the mean PC.", {"max_abs_deviation": spread})
+               "uses the mean PC.", max_abs_deviation=spread, warning_threshold=pc_tol)
+    if spread > pc_tol:
+        events("warning", f"PC variation {spread:.4f} exceeds {pc_tol}; index a smaller ROI or use "
+               "region-specific dictionaries (one run per region) before comparing phases.")
     pre = Preprocessor(list(config.preprocessing), work_scan.pattern_shape)
     pre.fit(work_scan)
     mask = pre.mask()
