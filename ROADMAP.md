@@ -17,9 +17,9 @@ until evidence from a suitable machine is recorded.
 - [x] 0.1 Python package `kikuchiworkbench` (src layout), `pyproject.toml`, console script `kwb`.
 - [~] 0.2 Pinned dependency ranges for kikuchipy, orix, h5py, numpy, PySide6 (optional `gui` extra), torch (optional `cuda` extra); record versions actually tested in the ledger.
 - [x] 0.3 Default test suite (`pytest`) runs offline with no OpenCL/CUDA; integration tests behind markers (`emsoft`, `cuda`, `gui`, `realdata`).
-- [ ] 0.4 CI workflow: Linux + Windows CPU runners, lint + unit tests + headless demo smoke test.
+- [x] 0.4 CI workflow: Linux + Windows CPU runners, lint + unit tests + headless demo smoke test.
 - [x] 0.5 `.gitignore` excludes caches, job folders, large scans and generated masters.
-- [ ] 0.6 Third-party licence and attribution notes (`docs/THIRD_PARTY.md`); repository licence left as an open decision.
+- [x] 0.6 Third-party licence and attribution notes (`docs/THIRD_PARTY.md`); repository licence left as an open decision.
 
 ## Phase 1 — Conventions and data model (feasibility & formats, milestone 1)
 
@@ -44,7 +44,7 @@ until evidence from a suitable machine is recorded.
 - [x] 3.2 Master cache keyed by crystal + simulation settings + provenance; atomic promotion only after verification.
 - [x] 3.3 CIF reader/validator: cell units, setting/origin, sites, occupancies; positive and negative controls (equivalent axis settings, malformed occupancies, unsupported representations).
 - [~] 3.4 EMsoft `.xtal` writer from validated CIF.
-- [ ] 3.5 EMsoft job adapter: namelist generation for crystal, Monte Carlo (`EMMCOpenCL`) and master (`EMEBSDmaster`) as distinct stages; no-shell subprocess, per-job working directory, logs, cancellation, HDF5 verification before cache promotion. Tested with a mock executable.
+- [x] 3.5 EMsoft job adapter: namelist generation for crystal, Monte Carlo (`EMMCOpenCL`) and master (`EMEBSDmaster`) as distinct stages; no-shell subprocess, per-job working directory, logs, cancellation, HDF5 verification before cache promotion. Tested with a mock executable.
 - [x] 3.6 Kinematical master generator (kikuchipy) for offline synthetic fixtures — clearly labelled as kinematical, never as dynamical EMsoft output.
 - [!] 3.7 **[HW]** Native Windows 11 EMsoft CIF → xtal → MC → master run with OpenCL; reproducible recipe; compare with reference projection. Release gate.
 
@@ -58,7 +58,7 @@ until evidence from a suitable machine is recorded.
 - [x] 4.6 Phase decision: best score per phase, runner-up, margin, unindexed (low score) and ambiguous (small margin) kept distinct.
 - [x] 4.7 Exports: PNG maps (phase, IPF, score, margin, ambiguity), CSV table, manifest.
 - [x] 4.8 Job system: isolated job folders, status file, logs, progress callback, cancellation; failed/cancelled outputs never promoted.
-- [~] 4.9 CLI `kwb`: `inspect`, `demo`, `index` (config file), `master import`, `cif validate`, `xtal`, `emsoft plan`.
+- [x] 4.9 CLI `kwb`: `inspect`, `demo`, `index` (config file), `master import`, `cif validate`, `xtal`, `emsoft plan`.
 - [x] 4.10 Offline small CPU demo end-to-end from the bundled Ni master; test asserting exact-grid orientation recovery up to symmetry.
 
 ## Phase 5 — Dictionary and phase validation (milestone 3)

@@ -94,3 +94,20 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   (median NCC 0.10 vs 0.49); default is now subtraction with σ = width/8.
 - Next: EMsoft job adapter (namelists, no-shell runner, mock executable tests) for `kwb emsoft plan`; then CI
   workflow, GUI skeleton.
+
+## 2026-11-23 — Entry 5: EMsoft adapter, CI, licence notes
+
+- `emsoft/jobs.py`: presets (`quick`, `standard`, both `validated: false`), namelist writers for `&MCCLdata`,
+  `&EBSDmastervars`, `&Bethelist` (key set from EMsoft 5.0 templates shipped with kikuchipy), plan → run MC →
+  verify MC (`accum_e`/`accum_z`, non-empty) → run master → verify master (space group, MC tilt) → cache promotion
+  with namelists/logs. Per-job `EMsoftConfig.json` via job-local HOME/USERPROFILE; argument-list subprocess,
+  terminate/kill on cancel, timeout.
+- `kwb emsoft plan|run|check`; `docs/emsoft.md` with the Windows recipe and native-run checklist.
+- Evidence: mock executables (`tests/mock_emsoft/`, run through the Python interpreter, reading the job-local
+  config) → full chain cached; simulated MC and master failures leave the cache empty; cancelling a running stage
+  → job INVALID. `pytest -q` → 99 passed, 1 deselected (`-m emsoft` real run).
+- Not verified: real EMsoft execution, Windows config resolution, trigonal crystal-system code (3.7 open).
+- `.github/workflows/ci.yml`: Linux + Windows, Python 3.11/3.12, ruff, pytest, both demos; uploads demo outputs.
+  CI has not run yet at the time of writing (check the Actions tab after push).
+- `docs/THIRD_PARTY.md`: dependency licences (GPL-3.0 kikuchipy/orix affects bundling), test-data provenance.
+- Next: PySide6 GUI skeleton on the shared core (6.1–6.3, 6.7), then benchmark scripts (5.2–5.4).

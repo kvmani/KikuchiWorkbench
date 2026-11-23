@@ -175,16 +175,38 @@ def cmd_demo(a) -> int:
 
 def cmd_emsoft(a) -> int:
     from .crystal.cif import read_cif
-    from .emsoft.jobs import EMsoftPreset, plan_master_job
+    from .emsoft.jobs import EMsoftInstall, EMsoftPreset, plan_master_job, run_master_job
 
+    if a.emsoft_cmd == "check":
+        inst = EMsoftInstall.discover()
+        if inst is None:
+            print("EMsoft not found. Set KWB_EMSOFT_BIN to the EMsoft bin folder.", file=sys.stderr)
+            return 2
+        _print_json(inst.check())
+        return 0
     model = read_cif(Path(a.cif))
     preset = EMsoftPreset.named(a.preset)
     if a.kv:
         preset.voltage_kV = a.kv
     if a.tilt:
         preset.sample_tilt_deg = a.tilt
-    plan = plan_master_job(model, preset, a.out)
-    _print_json(plan.describe())
+    if a.emsoft_cmd == "plan":
+        plan = plan_master_job(model, preset, a.out)
+        _print_json(plan.describe())
+        return 0
+    from .cache import ArtifactCache
+    from .jobs import Job
+
+    inst = EMsoftInstall.discover()
+    if inst is None:
+        print("EMsoft not found. Set KWB_EMSOFT_BIN to the EMsoft bin folder.", file=sys.stderr)
+        return 2
+    job = Job.create(a.jobs, "emsoft")
+    job.add_listener(_progress_printer(False))
+    plan = plan_master_job(model, preset, job.work)
+    rec = job.run(lambda j: run_master_job(plan, inst, cache=ArtifactCache(a.cache), job=j))
+    (job.outputs / "emsoft_record.json").write_text(json.dumps(rec, indent=2, default=str))
+    print(f"Verified master cached at: {rec.get('cached_master')}")
     return 0
 
 
@@ -263,6 +285,14 @@ def build_parser() -> argparse.ArgumentParser:
     ep.add_argument("--preset", default="quick")
     ep.add_argument("--kv", type=float)
     ep.add_argument("--tilt", type=float)
+    er = esub.add_parser("run", help="run EMMCOpenCL + EMEBSDmaster in a job folder and cache the master")
+    er.add_argument("cif")
+    er.add_argument("--preset", default="quick")
+    er.add_argument("--kv", type=float)
+    er.add_argument("--tilt", type=float)
+    er.add_argument("--jobs", default="kwb_jobs")
+    er.add_argument("--cache", default=None)
+    esub.add_parser("check", help="locate EMsoft executables")
     e.set_defaults(fn=cmd_emsoft)
     return p
 
