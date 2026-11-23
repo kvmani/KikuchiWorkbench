@@ -347,3 +347,10 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   the job folder; project items get their run appended), `kwb batch add|run|status|retry`, GUI Tools → Batch
   queue panel (worker run, live table, cancel, retry). Tests: mixed good/bad/project queue, crash-resume, CLI,
   GUI panel.
+- 8.8 Comparison view done: `compare.py` (per-point disorientation to vendor orientations with automatic
+  sample-frame detection among identity/Rz90/180/270/Rx180/Rx180·Rz90 — the chosen frame and all candidate
+  medians are reported; phase agreement table and fraction with vendor phase names). Runs automatically when the
+  scan carries vendor orientations (EDAX H5; fixtures can now store them); writes comparison.json and a
+  disorientation map to the job folder, adds a report section and a GUI "Vendor disorientation" map. Tests:
+  frame detection (Rz90 recovered exactly), end-to-end job with report section.
+  Limitation: Oxford `.ebsp` carries no vendor orientations; H5OINA/CTF comparison still to add with real exports.

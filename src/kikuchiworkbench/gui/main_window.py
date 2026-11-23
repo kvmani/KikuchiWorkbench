@@ -1234,7 +1234,7 @@ class MainWindow(QMainWindow):
         lay = QVBoxLayout(w)
         row = QHBoxLayout()
         self.map_kind = QComboBox()
-        self.map_kind.addItems(["Phase", "IPF-Z", "Best score", "Phase margin", "Signal"])
+        self.map_kind.addItems(["Phase", "IPF-Z", "Best score", "Phase margin", "Signal", "Vendor disorientation"])
         self.map_kind.currentIndexChanged.connect(self.refresh_map)
         row.addWidget(QLabel("Map:"))
         row.addWidget(self.map_kind)
@@ -1314,6 +1314,12 @@ class MainWindow(QMainWindow):
             return scan.to_map(r.decision.best_score)
         if kind == "Phase margin":
             return scan.to_map(np.nan_to_num(r.decision.margin, nan=0.0))
+        if kind == "Vendor disorientation":
+            cmp = r.context.get("vendor_comparison")
+            if cmp is None:
+                self.append_log("No vendor orientations in this scan; nothing to compare.")
+                return scan.to_map(np.zeros(r.n_points))
+            return scan.to_map(np.nan_to_num(np.clip(cmp["disorientation_deg"], 0, 10), nan=10.0))
         return scan.to_map(r.signal)
 
     def refresh_map(self):

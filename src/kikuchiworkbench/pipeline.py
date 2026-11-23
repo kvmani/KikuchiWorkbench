@@ -534,6 +534,20 @@ def run_indexing(
         files = export_maps(result, work_scan, out_dir) if config.output.get("png", True) else {}
         files["table_csv"] = export_csv(result, work_scan, out_dir / "results.csv")
         files["results_h5"] = export_h5(result, work_scan, out_dir / "results.h5")
+        if work_scan.vendor_euler_deg is not None and (config.output or {}).get("compare_vendor", True):
+            try:
+                from .compare import compare_result, export_comparison
+
+                cmp = compare_result(result, work_scan.vendor_euler_deg, work_scan.vendor_phase,
+                                     (config.output or {}).get("vendor_phase_names"),
+                                     frame=(config.output or {}).get("vendor_frame", "auto"))
+                files.update(export_comparison(cmp, result, work_scan, out_dir))
+                manifest.results["vendor_comparison"] = {k: v for k, v in cmp.items() if k != "disorientation_deg"}
+                result.context["vendor_comparison"] = cmp
+                events("vendor_comparison", f"Compared with vendor orientations (frame {cmp['frame']}): median "
+                       f"disorientation {cmp['median_disorientation_deg']}°")
+            except Exception as e:  # comparison is optional and must not fail the run
+                events("warning", f"Vendor comparison failed: {e}")
         manifest.outputs = files
     manifest.status = "completed"
     if export:

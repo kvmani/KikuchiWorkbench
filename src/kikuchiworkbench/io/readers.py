@@ -442,6 +442,11 @@ def write_fixture(path: str | os.PathLike, scan: ScanData, truth: dict | None = 
                 else:
                     t[k] = np.asarray(v)
         h.attrs["provenance"] = json.dumps(provenance or {})
+        if scan.vendor_euler_deg is not None:
+            v = h.create_group("vendor")
+            v["euler_deg"] = np.asarray(scan.vendor_euler_deg, dtype=float)
+            if scan.vendor_phase is not None:
+                v["phase"] = np.asarray(scan.vendor_phase)
         h.attrs["metadata"] = json.dumps({k: v for k, v in scan.metadata.items()
                                           if not k.startswith("_") and not isinstance(v, np.ndarray)}, default=str)
     return p
@@ -485,6 +490,8 @@ def _read_fixture(path: Path, info: FormatInfo) -> ScanData:
             geometry_source=str(d.attrs.get("geometry_source", GEOMETRY_FROM_FILE)),
             metadata={"format": info.to_dict(), "provenance": json.loads(h.attrs.get("provenance", "{}"))},
             source_path=str(path), dataset_path="patterns",
+            vendor_euler_deg=h["vendor/euler_deg"][()] if "vendor/euler_deg" in h else None,
+            vendor_phase=h["vendor/phase"][()] if "vendor/phase" in h else None,
         )
     return scan
 

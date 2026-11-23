@@ -16,7 +16,8 @@ from collections import Counter
 from pathlib import Path
 
 MAPS = [("phase_map.png", "Phase"), ("ipf_z_map.png", "Orientation (IPF-Z)"), ("score_map.png", "Best NCC"),
-        ("margin_map.png", "Phase margin"), ("signal_map.png", "Signal")]
+        ("margin_map.png", "Phase margin"), ("signal_map.png", "Signal"),
+        ("vendor_disorientation_map.png", "Disorientation to vendor")]
 
 
 def _outputs_dir(path: str | os.PathLike) -> Path:
@@ -116,6 +117,19 @@ def _sections(d: dict) -> list[tuple[str, list[str]]]:
                                      if k.endswith("_s") and not k.endswith("per_s")),
              "Phase margins are ranking diagnostics, not probabilities."]
     secs.append(("Results", lines))
+    vc = m.get("results", {}).get("vendor_comparison")
+    if vc:
+        lines = [f"Frame correction applied: {vc.get('frame')} {vc.get('frame_euler_deg')} (medians tried: "
+                 f"{ {k: round(v, 2) for k, v in (vc.get('frame_medians_tried') or {}).items()} })",
+                 f"Disorientation to vendor (indexed points): median {vc.get('median_disorientation_deg')}°, "
+                 f"90th percentile {vc.get('p90_disorientation_deg')}°, within 2° {vc.get('fraction_within_2deg')}, "
+                 f"within 5° {vc.get('fraction_within_5deg')}"]
+        if vc.get("phase_table_vendor_rows_ours_cols"):
+            lines.append(f"Phase table (vendor rows → workbench columns): {vc['phase_table_vendor_rows_ours_cols']}")
+        if vc.get("phase_agreement_fraction") is not None:
+            lines.append(f"Phase agreement: {vc['phase_agreement_fraction']:.3f}")
+        lines.append("Vendor results are a comparison, not ground truth.")
+        secs.append(("Comparison with vendor indexing", lines))
     ev = [f"[{e['kind']}] {e['message']}" for e in m.get("events", [])]
     secs.append(("Events and warnings", ev or ["none"]))
     sw = m.get("software", {})

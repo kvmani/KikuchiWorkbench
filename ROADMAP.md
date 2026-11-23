@@ -108,7 +108,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   editing PC/tilt, residual and NCC readout.
 - [x] 8.7 (B7) **Batch queue** — queue several scans/ROIs/projects, run sequentially in a worker, resume after
   restart (queue file), per-item status. CLI `kwb batch QUEUE`, GUI queue panel.
-- [ ] 8.8 (B8) **Comparison view** — vendor orientations/phases vs workbench: disorientation map, phase
+- [x] 8.8 (B8) **Comparison view** — vendor orientations/phases vs workbench: disorientation map, phase
   agreement/confusion table, exported in the report.
 - [ ] 8.9 (B10) **Reader plug-ins** — registry (Python entry points `kikuchiworkbench.readers`) so new formats plug
   into detection and `load_scan`; first plug-ins: NORDIF and Bruker h5ebsd via kikuchipy.
