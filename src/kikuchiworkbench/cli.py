@@ -161,6 +161,28 @@ def cmd_index(a) -> int:
     return 0
 
 
+def cmd_project(a) -> int:
+    from .pipeline import run_indexing_job
+    from .project import Project
+
+    proj = Project.load(a.file)
+    if a.project_cmd == "show":
+        for line in proj.summary_lines():
+            print(line)
+        return 0
+    cfg = proj.to_indexing_config()
+    if a.preset:
+        from .pipeline import IndexingConfig
+
+        cfg = IndexingConfig.from_dict(proj.to_config_dict(), preset=a.preset)
+    job, result = run_indexing_job(cfg, a.jobs, listener=_progress_printer(a.quiet))
+    proj.add_run(job.path, result, cfg)
+    proj.save(a.file)
+    _summarise(job, result)
+    print(f"Run recorded in project {a.file}")
+    return 0
+
+
 def cmd_presets(a) -> int:
     from .presets import PRESETS
 
@@ -289,6 +311,17 @@ def build_parser() -> argparse.ArgumentParser:
 
     g = sub.add_parser("gui", help="start the desktop GUI")
     g.set_defaults(fn=lambda a: __import__("kikuchiworkbench.gui.main_window", fromlist=["main"]).main([]))
+
+    pj = sub.add_parser("project", help="KikuchiWorkbench project files (.kwbproj)")
+    pjs = pj.add_subparsers(dest="project_cmd", required=True)
+    pshow = pjs.add_parser("show")
+    pshow.add_argument("file")
+    prun = pjs.add_parser("run", help="run indexing with the project's settings and record the run")
+    prun.add_argument("file")
+    prun.add_argument("--jobs", default="kwb_jobs")
+    prun.add_argument("--preset", choices=["quick", "standard", "phase_study"])
+    prun.add_argument("--quiet", action="store_true")
+    pj.set_defaults(fn=cmd_project)
 
     pr = sub.add_parser("presets", help="list indexing presets")
     pr.set_defaults(fn=cmd_presets)

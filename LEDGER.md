@@ -319,3 +319,7 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   name recorded in config/manifest), `launch_check` (RAM vs available, rough time from measured throughput,
   warnings > 70% RAM / > 1 h / huge dictionaries), `kwb index --preset`, `kwb presets`, GUI preset selector and
   estimate with warnings. Tests: tests/test_presets.py + GUI test.
+- 8.2 Project files done: `project.py` (`.kwbproj` JSON v1; scan + load options, phases, geometry incl.
+  calibration, settings, run history; paths relative to the project file, so folders can move), GUI File menu
+  (New / Open / Save / Save as; geometry reapplied after the scan loads; runs appended and auto-saved),
+  `kwb project show|run`. Tests: round trip + move, CLI run recorded, GUI save → reopen → run.

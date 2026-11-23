@@ -123,9 +123,19 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main)
         self.steps.setCurrentRow(0)
 
-        act = QAction("Open bundled example", self)
-        act.triggered.connect(self.open_example)
-        self.menuBar().addMenu("&File").addAction(act)
+        self.project = None  # kikuchiworkbench.project.Project
+        self._scan_load_kwargs: dict = {}
+        self._pending_geometry: dict | None = None
+        fm = self.menuBar().addMenu("&File")
+        for label, fn in (("New project", self.new_project), ("Open project…", self._choose_open_project),
+                          ("Save project", self._save_project_clicked), ("Save project as…", self._choose_save_project),
+                          (None, None), ("Open bundled example", self.open_example)):
+            if label is None:
+                fm.addSeparator()
+                continue
+            act = QAction(label, self)
+            act.triggered.connect(lambda checked=False, f=fn: f())
+            fm.addAction(act)
         self.append_log(f"KikuchiWorkbench {__version__}. Jobs folder: {self.jobs_root}")
 
     # ------------------------------------------------------------------ infra
@@ -190,6 +200,120 @@ class MainWindow(QMainWindow):
                 self.current_job.cancel_token.cancel()
             self.append_log("Cancellation requested...")
 
+    # ------------------------------------------------------------------ project files
+
+    def new_project(self, name: str = "untitled"):
+        from ..project import Project
+
+        self.project = Project(name=name)
+        self.setWindowTitle(f"KikuchiWorkbench {__version__} — {name}")
+        self.append_log(f"New project: {name}")
+        return self.project
+
+    def project_from_state(self):
+        """Capture the current GUI state in the project (creating one if needed)."""
+        from ..project import Project, geometry_from_scan
+
+        proj = self.project or Project(name="untitled")
+        proj.scan = {"path": self.scan_path, "load_kwargs": dict(self._scan_load_kwargs)} if self.scan_path else {}
+        if self.scan is not None and not self.scan.geometry_source.startswith("missing"):
+            proj.geometry = geometry_from_scan(self.scan)
+        proj.phases = [{"name": p["name"], "master": p["master"], "energy": "max"} for p in self.phases]
+        proj.settings = {
+            "preset": self.preset.currentText() if self.preset.currentText() != "(custom)" else None,
+            "resolution_deg": self.resolution.value(), "backend": self.backend.currentText(),
+            "bin2": self.bin2.isChecked(), "refine": self.refine.isChecked(), "cache": self.cache_dict.isChecked(),
+            "roi": [sb.value() for sb in self.roi_spins] if self.use_roi.isChecked() else None,
+            "min_score": self.min_score.value(), "ambiguity_margin": self.amb_margin.value(),
+        }
+        self.project = proj
+        return proj
+
+    def save_project(self, path: str | None = None):
+        proj = self.project_from_state()
+        target = path or proj.path
+        if not target:
+            raise WorkbenchError("No project file chosen; use 'Save project as…'.")
+        if proj.name == "untitled":
+            proj.name = Path(target).stem
+        p = proj.save(target)
+        self.setWindowTitle(f"KikuchiWorkbench {__version__} — {proj.name}")
+        self.append_log(f"Project saved: {p}")
+        return p
+
+    def _save_project_clicked(self):
+        if self.project is None or not self.project.path:
+            return self._choose_save_project()
+        return self.save_project()
+
+    def _choose_save_project(self):
+        path, _ = QFileDialog.getSaveFileName(self, "Save project", "", "KikuchiWorkbench project (*.kwbproj)")
+        if path:
+            return self.save_project(path)
+        return None
+
+    def _choose_open_project(self):
+        path, _ = QFileDialog.getOpenFileName(self, "Open project", "", "KikuchiWorkbench project (*.kwbproj)")
+        if path:
+            return self.open_project(path)
+        return None
+
+    def open_project(self, path: str):
+        """Restore phases and settings, then load the scan in a worker and reapply the geometry."""
+        from ..project import Project
+
+        proj = Project.load(path)
+        self.project = proj
+        self.phases = []
+        self.phase_list.clear()
+        for ph in proj.phases:
+            self.add_master(ph["master"], ph.get("name"))
+        st = proj.settings
+        if st.get("preset"):
+            self.preset.setCurrentText(st["preset"])
+        self.resolution.setValue(float(st.get("resolution_deg", self.resolution.value())))
+        self.backend.setCurrentText(st.get("backend", "auto"))
+        self.bin2.setChecked(bool(st.get("bin2")))
+        self.refine.setChecked(bool(st.get("refine")))
+        self.cache_dict.setChecked(bool(st.get("cache")))
+        if st.get("roi"):
+            self.use_roi.setChecked(True)
+            for sb, v in zip(self.roi_spins, st["roi"], strict=True):
+                sb.setValue(int(v))
+        else:
+            self.use_roi.setChecked(False)
+        if "min_score" in st:
+            self.min_score.setValue(float(st["min_score"]))
+        if "ambiguity_margin" in st:
+            self.amb_margin.setValue(float(st["ambiguity_margin"]))
+        self.setWindowTitle(f"KikuchiWorkbench {__version__} — {proj.name}")
+        for line in proj.summary_lines():
+            self.append_log(line)
+        self._pending_geometry = proj.geometry or None
+        if proj.scan.get("path"):
+            return self.load_scan(proj.scan["path"], **(proj.scan.get("load_kwargs") or {}))
+        return None
+
+    def _restore_geometry(self, g: dict):
+        from ..conventions import DetectorShape, to_bruker
+
+        d = self.scan.detector
+        pc = g.get("pc")
+        if pc is None:
+            return
+        if g.get("pc_convention", "bruker") != "bruker":
+            pc = list(to_bruker(pc, g["pc_convention"], DetectorShape(*d.shape, int(g.get("binning", 1)))))
+        for sb, v in zip(self.pc, pc, strict=True):
+            sb.setValue(float(v))
+        self.det_tilt.setValue(float(g.get("tilt", d.tilt)))
+        self.binning.setValue(int(g.get("binning", d.binning)))
+        self.apply_geometry()
+        if g.get("source") == "calibrated":
+            self.scan.geometry_source = "calibrated"
+            if g.get("calibration"):
+                self.scan.metadata["pc_calibration"] = g["calibration"]
+        self.append_log(f"Geometry restored from project: PC {pc} ({g.get('source', 'user')})")
+
     # ------------------------------------------------------------------ step 1: scan
 
     def _build_scan_page(self) -> QWidget:
@@ -230,12 +354,17 @@ class MainWindow(QMainWindow):
     def load_scan(self, path: str, **kwargs):
         from ..io.readers import load_scan
 
+        self._scan_load_kwargs = dict(kwargs)
+
         def job(worker):
             worker.report(0.1, "Reading scan")
             return load_scan(path, **kwargs)
 
         def done(scan):
             self.set_scan(scan, path)
+            if self._pending_geometry:
+                self._restore_geometry(self._pending_geometry)
+                self._pending_geometry = None
 
         return self.run_in_worker(job, done, f"Loading {Path(path).name}")
 
@@ -788,6 +917,11 @@ class MainWindow(QMainWindow):
 
     def show_result(self, result):
         self.result = result
+        if self.project is not None and result.job_dir:
+            self.project.add_run(result.job_dir, result, None)
+            if self.project.path:
+                self.project.save(self.project.path)
+                self.append_log(f"Run added to project {self.project.path}")
         self.append_log(f"Indexing finished: {result.decision.counts()} (job {result.job_dir})")
         for e in result.manifest.events:
             self.append_log(f"  [{e['kind']}] {e['message']}")

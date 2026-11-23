@@ -92,3 +92,30 @@ def test_gui_cancel_and_cif(app, tmp_path):
     assert "rejected" in win.phase_info.toPlainText()
     assert win.validate_cif(os.path.join(here, "data", "cif", "cu.cif")) is not None
     win.close()
+
+
+def test_gui_project_save_and_reopen(app, tmp_path):
+    win = MainWindow(jobs_root=str(tmp_path))
+    win.open_example()
+    wait_idle(app, win)
+    win.pc[0].setValue(0.43)
+    win.apply_geometry()
+    win.resolution.setValue(6.0)
+    win.refine.setChecked(True)
+    win.use_roi.setChecked(True)
+    p = win.save_project(str(tmp_path / "proj" / "example.kwbproj"))
+    assert p.exists()
+    win.close()
+    win2 = MainWindow(jobs_root=str(tmp_path))
+    win2.open_project(str(p))
+    wait_idle(app, win2)
+    assert win2.scan is not None and len(win2.phases) == 1
+    assert win2.resolution.value() == 6.0 and win2.refine.isChecked() and win2.use_roi.isChecked()
+    assert abs(win2.scan.detector.pc_average.ravel()[0] - 0.43) < 1e-6
+    win2.run_indexing()
+    wait_idle(app, win2)
+    assert len(win2.project.runs) == 1  # run recorded and project auto-saved
+    from kikuchiworkbench.project import Project
+
+    assert len(Project.load(p).runs) == 1
+    win2.close()
