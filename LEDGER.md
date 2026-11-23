@@ -301,3 +301,4 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   `$KWB_ARTIFACTS_DIR` (default `~/kwb_review_artifacts`) outside the repository.
 - Earlier entries that mention files under `docs/review/`, `docs/images/` or result PNGs refer to these local
   artifacts; the JSON summaries and manifests in `benchmarks/results/` remain in Git.
+- CI no longer uploads demo outputs (PNG maps) as Actions artifacts.

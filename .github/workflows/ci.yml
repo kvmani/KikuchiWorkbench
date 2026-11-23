@@ -42,10 +42,3 @@ jobs:
         run: |
           kwb demo --jobs ci_jobs --rows 4 --cols 4 --resolution 5 --quiet
           kwb demo --two-phase --jobs ci_jobs --rows 4 --cols 4 --resolution 5 --quiet
-      - name: Upload demo outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: demo-${{ matrix.os }}-py${{ matrix.python }}
-          path: ci_jobs/*/outputs
-          if-no-files-found: ignore
