@@ -309,3 +309,9 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
 - `docs/ideas_and_research.md`: backlog of indexing-quality features (A1–A10), usability features (B1–B10) and
   eight research problems with publication potential; suggested first paper: dynamical same-structure
   discrimination limits + calibrated phase confidence.
+
+## 2026-11-23 — Entry 18: Ease-of-use roadmap (Phase 8)
+
+- Added ROADMAP Phase 8 (8.1–8.10) covering all ten ease-of-use features in dependency order: presets → project
+  files → interactive ROI → run report → phase library → geometry wizard → batch queue → comparison view →
+  reader plug-ins → Windows installer (hardware-gated).

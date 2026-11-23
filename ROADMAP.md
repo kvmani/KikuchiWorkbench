@@ -91,6 +91,30 @@ until evidence from a suitable machine is recorded.
 - [x] 7.4 Advanced parameter reference, CLI reproduction guide, troubleshooting.
 - [ ] 7.5 Benchmark report with validated platforms, file variants and limitations.
 
+## Phase 8 — Ease of use (from docs/ideas_and_research.md, section B)
+
+Order chosen so later items reuse earlier ones (presets and project files feed the batch queue and reports).
+
+- [ ] 8.1 (B6) **Presets** — "quick look", "standard", "phase study": grid, binning, refinement, calibration;
+  resource check warns on RAM/time before launch. CLI `--preset`, GUI preset selector.
+- [ ] 8.2 (B1) **Project files** — `.kwbproj` JSON (scan + load options, phases, geometry/calibration, settings,
+  run history with job folders). Save/open in GUI, `kwb project` CLI, round-trip tests.
+- [ ] 8.3 (B2) **Interactive ROI** — drag a rectangle on the scan/result map; syncs the ROI fields.
+- [ ] 8.4 (B5) **One-click run report** — Markdown + self-contained HTML (maps embedded, written to the job folder,
+  never into Git): inputs, settings, counts, warnings, timings, manifest link. CLI `kwb report JOB`, GUI button.
+- [ ] 8.5 (B3) **Phase library and cache browser** — list/search verified masters (formula, space group, energy,
+  kinematical flag, provenance); add to project in one click; prune cache.
+- [ ] 8.6 (B4) **Geometry wizard** — kinematical band-line overlay on the measured pattern, live update while
+  editing PC/tilt, residual and NCC readout.
+- [ ] 8.7 (B7) **Batch queue** — queue several scans/ROIs/projects, run sequentially in a worker, resume after
+  restart (queue file), per-item status. CLI `kwb batch QUEUE`, GUI queue panel.
+- [ ] 8.8 (B8) **Comparison view** — vendor orientations/phases vs workbench: disorientation map, phase
+  agreement/confusion table, exported in the report.
+- [ ] 8.9 (B10) **Reader plug-ins** — registry (Python entry points `kikuchiworkbench.readers`) so new formats plug
+  into detection and `load_scan`; first plug-ins: NORDIF and Bruker h5ebsd via kikuchipy.
+- [ ] 8.10 (B9) **Offline Windows installer** **[HW]** — PyInstaller spec + build script and docs prepared here;
+  build and signing on Windows after the native EMsoft gate.
+
 ## Release-candidate gate (from AGENTS.md)
 
 - [ ] Native Windows CIF→master run demonstrated **[HW]**
