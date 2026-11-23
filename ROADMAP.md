@@ -64,10 +64,11 @@ until evidence from a suitable machine is recorded.
 ## Phase 5 — Dictionary and phase validation (milestone 3)
 
 - [~] 5.1 Optional PyTorch CUDA matcher; Auto/CPU/GPU selection; automatic fallback and batch shrink recorded in manifest.
-- [~] 5.2 Synthetic two-phase cubic fixture generator (Ni a=3.524 Å vs Cu a=3.615 Å FCC Fm-3m), held-out off-grid orientations, seeds recorded.
-- [~] 5.3 Identical-master control (must report ambiguity), lattice-parameter sweep, PC offset, noise, binning, angular-step stress tests.
-- [ ] 5.4 Benchmark scripts producing confusion matrices (incl. ambiguous/unindexed), per-phase recall, coverage vs error, misorientation error, margins, compute cost.
-- [ ] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
+- [x] 5.2 Synthetic two-phase cubic fixture generator (Ni a=3.524 Å vs Cu a=3.615 Å FCC Fm-3m), held-out off-grid orientations, seeds recorded.
+- [x] 5.3 Identical-master control (must report ambiguity), lattice-parameter sweep, PC offset, noise, binning, angular-step stress tests.
+- [~] 5.4 Benchmark scripts producing confusion matrices (incl. ambiguous/unindexed), per-phase recall, coverage vs error, misorientation error, margins, compute cost.
+- [~] 5.5 Threshold selection on dev fixtures, frozen before held-out runs.
+- [ ] 5.8 Equal-budget orientation refinement per phase (needed: grid error swamps the Ni/Cu score difference).
 - [ ] 5.6 **[HW]** Measured CPU/GPU parity, throughput, peak RAM/VRAM on a 4 GB CUDA GPU.
 - [ ] 5.7 **[HW/data]** Real-data interoperability: public Oxford Al–Si `.ebsp` + EMsoft Al/Si masters; TSL scan.
 
@@ -84,8 +85,8 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 7 — Documentation and release
 
-- [ ] 7.1 Beginner quick start (bundled example, offline).
-- [ ] 7.2 Vendor export instructions (Oxford AZtec, EDAX OIM/APEX).
+- [~] 7.1 Beginner quick start (bundled example, offline).
+- [~] 7.2 Vendor export instructions (Oxford AZtec, EDAX OIM/APEX).
 - [ ] 7.3 Native Windows EMsoft CIF-to-master tutorial (after 3.7).
 - [ ] 7.4 Advanced parameter reference, CLI reproduction guide, troubleshooting.
 - [ ] 7.5 Benchmark report with validated platforms, file variants and limitations.

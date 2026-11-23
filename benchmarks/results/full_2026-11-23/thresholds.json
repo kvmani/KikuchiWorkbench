@@ -1,0 +1,323 @@
+{
+  "thresholds": {
+    "min_score": 0.1,
+    "ambiguity_margin": 0.05,
+    "provenance": "selected on dev baseline (seed 1001, n=196); target error <= 0.01; frozen 2026-11-23T13:46:20+00:00"
+  },
+  "selection": {
+    "ambiguity_margin": 0.05,
+    "coverage": 0.0,
+    "n_indexed": 0,
+    "error_among_indexed": 0.0,
+    "met_target": false,
+    "min_indexed": 10
+  },
+  "dev_curve": [
+    {
+      "ambiguity_margin": 0.0,
+      "coverage": 1.0,
+      "n_indexed": 196,
+      "error_among_indexed": 0.4489795918367347
+    },
+    {
+      "ambiguity_margin": 0.001,
+      "coverage": 0.7653061224489796,
+      "n_indexed": 150,
+      "error_among_indexed": 0.38666666666666666
+    },
+    {
+      "ambiguity_margin": 0.002,
+      "coverage": 0.5714285714285714,
+      "n_indexed": 112,
+      "error_among_indexed": 0.33035714285714285
+    },
+    {
+      "ambiguity_margin": 0.003,
+      "coverage": 0.336734693877551,
+      "n_indexed": 66,
+      "error_among_indexed": 0.3484848484848485
+    },
+    {
+      "ambiguity_margin": 0.004,
+      "coverage": 0.16326530612244897,
+      "n_indexed": 32,
+      "error_among_indexed": 0.375
+    },
+    {
+      "ambiguity_margin": 0.005,
+      "coverage": 0.0663265306122449,
+      "n_indexed": 13,
+      "error_among_indexed": 0.3076923076923077
+    },
+    {
+      "ambiguity_margin": 0.006,
+      "coverage": 0.02040816326530612,
+      "n_indexed": 4,
+      "error_among_indexed": 0.25
+    },
+    {
+      "ambiguity_margin": 0.007,
+      "coverage": 0.01020408163265306,
+      "n_indexed": 2,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.008,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.009,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.01,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.011,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.012,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.013,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.014,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.015,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.016,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.017,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.018,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.019,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.02,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.021,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.022,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.023,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.024,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.025,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.026,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.027,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.028,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.029,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.03,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.031,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.032,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.033,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.034,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.035,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.036,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.037,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.038,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.039,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.04,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.041,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.042,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.043,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.044,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.045,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.046,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.047,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.048,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.049,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    },
+    {
+      "ambiguity_margin": 0.05,
+      "coverage": 0.0,
+      "n_indexed": 0,
+      "error_among_indexed": 0.0
+    }
+  ]
+}

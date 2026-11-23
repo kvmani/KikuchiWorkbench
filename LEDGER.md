@@ -142,3 +142,32 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   verified (shape, finite, unit norm) before promotion; read back as memmap. Test: cache hit gives identical top-k
   to the uncached path; a different PC misses. `pytest tests/test_pipeline.py` → 9 passed.
 - Next: controlled cubic benchmark script (dev/held-out split, frozen thresholds, stress conditions).
+
+## 2026-11-23 — Entry 8: Cubic discrimination benchmark — reflector-cutoff artifact found and removed
+
+- `kikuchiworkbench/benchmark.py` + `benchmarks/run_cubic_discrimination.py`: dev (seed 1001) and held-out
+  (seed 2002) scans with random off-grid orientations; ambiguity margin selected on the dev baseline (smallest
+  margin with error ≤ 1% and ≥ 10 indexed points) and written to `thresholds.json` before held-out runs, which read
+  the frozen file. Conditions: noise (50/400/2000 counts), PC error (0.005/0.01/0.02), binning 2, step 3/4/6°,
+  identical masters, 50/50 mixed patterns, same-chemistry lattice sweep (0.5/1/2%), matched vs mismatched master
+  routes. Outputs: report.md, results.json, thresholds.json, coverage-vs-error CSVs.
+- **Artifact found.** The first runs showed perfect Ni/Cu separation with matched routes and a suspicious jump
+  between a 1% (no separation) and 2% (perfect) lattice change. Cause: a fixed d-spacing cutoff (0.8 Å) admits
+  {420} (h²+k²+l² = 20) for Cu (d = 0.808 Å) and Ni+2% but not for Ni (0.788 Å), so one master had an extra band
+  family. The earlier `kwb demo --two-phase` "100% accuracy" (Entry 4) was this artifact and is withdrawn.
+  Fix: kinematical masters accept `max_hkl_sq` (identical hkl families for all compared cubic phases) and store the
+  rule and family list; the pipeline warns when competing kinematical masters have different families (tested).
+- **Artifact-free result** (`benchmarks/results/full_2026-11-23/report.md`, 196 points/scan, kinematical masters):
+  Ni vs Cu median true-phase NCC margin ≈ 0.0005–0.0012. At zero ambiguity margin the error among indexed points
+  is 0.27–0.30 with matched master routes and 0.45 (near chance) with the mismatched route; noise, PC error,
+  binning and step size do not change this materially. The dev-selected threshold could not meet the 1% error
+  target (`met_target: false`) and froze at the largest margin tested (0.05), so held-out pixels are reported
+  ambiguous — **no confidently wrong labels in any condition**; identical masters and 50/50 mixed patterns are
+  100% ambiguous as required.
+- Interpretation (to test next): the 4° dictionary grid gives ~2° orientation error, whose NCC penalty is ~100×
+  the phase effect, so the per-phase best orientation differs by chance. Equal-budget orientation refinement for
+  each phase (scope: phase decision) is the next step (roadmap 5.8).
+- Two-phase demo pass rule changed to "no confidently wrong labels and orientation within the grid resolution";
+  it now reports all 36 pixels ambiguous, true phase scores higher for 24/36.
+- Docs: `docs/quickstart.md`, `docs/vendor_export.md` (unverified against lab exports). `pytest -q` → 106 passed.
+- Next: orientation refinement with equal budget per phase; rerun the benchmark.

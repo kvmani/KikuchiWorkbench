@@ -136,3 +136,28 @@ def test_cache_failed_verification_not_promoted(tmp_path):
     (cache.root / "dicts" / "deadbeef").mkdir(parents=True)
     assert cache.entries("dicts") == []
     assert cache.clean_incomplete() >= 1
+
+
+def test_reflector_rule_and_cutoff_warning(tmp_path):
+    from kikuchiworkbench.masters.importer import inspect_master as im
+    from kikuchiworkbench.pipeline import IndexingConfig, PhaseSpec, run_indexing
+    from kikuchiworkbench.synthetic import SyntheticSpec, make_synthetic_scan
+
+    ni = make_cubic_model("Ni", "Ni", 3.524)
+    cu = make_cubic_model("Cu", "Cu", 3.615)
+    # fixed d-spacing cutoff: {420} (N=20) is admitted for Cu but not for Ni
+    a = simulate_kinematical_master(ni, tmp_path / "ni_d.h5", dmin_A=0.8, half_size=40)
+    b = simulate_kinematical_master(cu, tmp_path / "cu_d.h5", dmin_A=0.8, half_size=40)
+    fa = im(a).nml["EBSDMasterNameList"]["reflector_families_hkl_sq"]
+    fb = im(b).nml["EBSDMasterNameList"]["reflector_families_hkl_sq"]
+    assert 20 not in fa and 20 in fb
+    c = simulate_kinematical_master(ni, tmp_path / "ni_h.h5", max_hkl_sq=20, half_size=40)
+    d = simulate_kinematical_master(cu, tmp_path / "cu_h.h5", max_hkl_sq=20, half_size=40)
+    assert (im(c).nml["EBSDMasterNameList"]["reflector_families_hkl_sq"]
+            == im(d).nml["EBSDMasterNameList"]["reflector_families_hkl_sq"])
+    ms = [load_master(a, phase_name="Ni"), load_master(b, phase_name="Cu")]
+    scan, _ = make_synthetic_scan(ms, SyntheticSpec(nrows=1, ncols=2))
+    cfg = IndexingConfig(scan={"path": "x"}, phases=[PhaseSpec(master=str(a)), PhaseSpec(master=str(b))],
+                         sampling={"resolution_deg": 10.0})
+    r = run_indexing(cfg, scan=scan, masters=ms, export=False)
+    assert any("reflector families" in e["message"] for e in r.manifest.events)

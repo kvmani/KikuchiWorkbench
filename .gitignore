@@ -19,5 +19,4 @@ cache/
 *.oh5
 /data/
 /outputs/
-benchmarks/results/*/
-!benchmarks/results/.gitkeep
+benchmarks/results/*/cache/

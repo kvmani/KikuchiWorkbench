@@ -32,6 +32,7 @@ class DecisionPolicy:
     tie_tolerance: float = 1e-6  # margins this small are exact ties
     min_signal: float | None = None  # signal metric below which a pixel is low-signal
     provenance: str = "provisional defaults (not calibrated on development fixtures)"
+    met_error_target_on_dev: bool | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)

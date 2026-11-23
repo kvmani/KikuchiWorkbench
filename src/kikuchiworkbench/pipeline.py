@@ -306,6 +306,14 @@ def run_indexing(
         if kv and m.energy_keV and abs(float(kv) - m.energy_keV) > 1.0:
             events("warning", f"Phase {names[i]}: master energy {m.energy_keV} keV vs beam {kv} kV.")
 
+    fams = {names[i]: m.info.nml.get("EBSDMasterNameList", {}).get("reflector_families_hkl_sq")
+            for i, m in enumerate(masters) if is_kinematical(m.info.program)}
+    fams = {k: tuple(v) if isinstance(v, list) else v for k, v in fams.items() if v is not None}
+    if len(set(fams.values())) > 1:
+        events("warning", "Competing kinematical masters include different reflector families "
+               f"{fams}; phase scores can differ because of the reflector cutoff rather than physics. "
+               "Regenerate with the same max_hkl_sq.")
+
     # ---- geometry and preprocessing
     det_raw, spread = single_pc_detector(work_scan.detector)
     if spread > 0:

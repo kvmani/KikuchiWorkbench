@@ -36,12 +36,28 @@ def simulate_kinematical_master(
     sample_tilt_deg: float = 70.0,
     intensity_fraction: float = 1e-3,
     phase_name: str | None = None,
+    max_hkl_sq: int | None = None,
 ) -> Path:
-    """Compute a kinematical Lambert master (both hemispheres) and write it."""
+    """Compute a kinematical Lambert master (both hemispheres) and write it.
+
+    Reflector rule: by default all reflectors with d >= ``dmin_A``. For comparing
+    phases whose lattice parameters differ slightly, a fixed d-spacing cutoff
+    includes different hkl families for each phase (e.g. {420} enters between
+    a = 3.56 and 3.59 Å at 0.8 Å) and creates an artificial difference. Use
+    ``max_hkl_sq`` (cubic only) to include exactly the families with
+    h² + k² + l² <= max_hkl_sq for every phase.
+    """
     import kikuchipy as kp
     from diffsims.crystallography import ReciprocalLatticeVector
 
     phase = model.to_orix_phase(name=phase_name or model.name)
+    if max_hkl_sq is not None:
+        if model.crystal_system != "cubic":
+            raise ValueError("max_hkl_sq reflector rule is only implemented for cubic phases")
+        dmin_A = model.a / np.sqrt(max_hkl_sq) * 0.999
+        rule = f"cubic hkl families with h2+k2+l2 <= {max_hkl_sq}"
+    else:
+        rule = f"d >= {dmin_A} A"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         ref = ReciprocalLatticeVector.from_min_dspacing(phase, dmin_A)
@@ -49,6 +65,11 @@ def simulate_kinematical_master(
         ref.calculate_structure_factor()
         f = np.abs(ref.structure_factor)
         ref = ref[f > intensity_fraction * f.max()]
+        if max_hkl_sq is not None:
+            nsq = np.round(np.sum(np.round(ref.hkl) ** 2, axis=1)).astype(int)
+            ref = ref[nsq <= max_hkl_sq]
+        families = sorted({int(v) for v in np.round(np.sum(np.round(ref.hkl) ** 2, axis=1))}) \
+            if model.crystal_system == "cubic" else []
         ref.calculate_theta(voltage_kV * 1e3)
         sim = kp.simulations.KikuchiPatternSimulator(ref)
         mp = sim.calculate_master_pattern(
@@ -81,6 +102,8 @@ def simulate_kinematical_master(
         em["latgridtype"] = np.array([b"Lambert"])
         em["kinematical_intensity_fraction"] = np.array([intensity_fraction])
         em["n_reflectors"] = np.array([int(ref.size)], dtype=np.int32)
+        em["reflector_rule"] = np.array([rule.encode()])
+        em["reflector_families_hkl_sq"] = np.array(families or [-1], dtype=np.int32)
     os.replace(tmp, p)
     return p
 

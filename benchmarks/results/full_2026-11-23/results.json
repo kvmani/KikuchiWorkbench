@@ -1,0 +1,1597 @@
+{
+  "mode": "full",
+  "n_points_per_scan": 196,
+  "seeds": {
+    "dev": 1001,
+    "heldout": 2002
+  },
+  "thresholds": {
+    "min_score": 0.1,
+    "ambiguity_margin": 0.05,
+    "provenance": "selected on dev baseline (seed 1001, n=196); target error <= 0.01; frozen 2026-11-23T13:46:20+00:00"
+  },
+  "routes": {
+    "dictionary": {
+      "max_hkl_sq": 20,
+      "half_size": 150
+    },
+    "target": {
+      "max_hkl_sq": 40,
+      "half_size": 200
+    }
+  },
+  "lattice_A": {
+    "Ni": 3.524,
+    "Cu": 3.615
+  },
+  "software": {
+    "python": "3.13.18",
+    "kikuchiworkbench": "0.1.0.dev0",
+    "kikuchipy": "0.14.2",
+    "orix": "0.15.0",
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "h5py": "3.16.0",
+    "diffpy.structure": "3.5.1",
+    "matplotlib": "3.11.2",
+    "PySide6": "6.12.0",
+    "torch": null
+  },
+  "hardware": {
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "cpu_count": 4,
+    "blas": "scipy-openblas"
+  },
+  "masters": "kinematical (kikuchipy simulator); NOT dynamical EMsoft",
+  "results": {
+    "baseline": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0005108416080474854,
+        "p05": -0.0037169307470321655,
+        "fraction_negative": 0.45918367346938777
+      },
+      "median_best_ncc": 0.6122876405715942,
+      "wall_time_s": 1.67,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "baseline"
+      }
+    },
+    "pc_error_0.01": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0005082190036773682,
+        "p05": -0.004350282251834869,
+        "fraction_negative": 0.42857142857142855
+      },
+      "median_best_ncc": 0.6047272682189941,
+      "wall_time_s": 7.9,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.01,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "pc_error_0.01"
+      }
+    },
+    "identical_masters": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni_copy"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni_copy",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            196,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni_copy": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0,
+        "p05": 0.0,
+        "fraction_negative": 0.0
+      },
+      "median_best_ncc": 0.6173867583274841,
+      "wall_time_s": 1.55,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni"
+        ],
+        "kind": "two_phase",
+        "name": "identical_masters"
+      }
+    },
+    "mixed_50_50": {
+      "n": 196,
+      "mixed_label_counts": {
+        "Ni": 0,
+        "Cu": 0,
+        "ambiguous": 196,
+        "unindexed/other": 0
+      },
+      "fraction_flagged": 1.0,
+      "wall_time_s": 1.44,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "mixed",
+        "name": "mixed_50_50"
+      }
+    },
+    "lattice_sweep_1%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+1%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+1%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+1%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 7.718801498413086e-06,
+        "p05": -0.001683056354522705,
+        "fraction_negative": 0.5
+      },
+      "median_best_ncc": 0.6167780756950378,
+      "wall_time_s": 4.54,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+1%"
+        ],
+        "kind": "two_phase",
+        "name": "lattice_sweep_1%"
+      }
+    },
+    "matched_route": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.001154869794845581,
+        "p05": -0.002747543156147003,
+        "fraction_negative": 0.27040816326530615
+      },
+      "median_best_ncc": 0.7034190893173218,
+      "wall_time_s": 1.52,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_route"
+      }
+    },
+    "matched_fine_route": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0008264780044555664,
+        "p05": -0.0016865730285644531,
+        "fraction_negative": 0.3010204081632653
+      },
+      "median_best_ncc": 0.6943038702011108,
+      "wall_time_s": 7.5,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "target",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_fine_route"
+      }
+    },
+    "counts_50": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00037635862827301025,
+        "p05": -0.003163054585456848,
+        "fraction_negative": 0.4387755102040816
+      },
+      "median_best_ncc": 0.41096073389053345,
+      "wall_time_s": 1.65,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 50.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "counts_50"
+      }
+    },
+    "counts_2000": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00042766332626342773,
+        "p05": -0.003928273916244507,
+        "fraction_negative": 0.4489795918367347
+      },
+      "median_best_ncc": 0.6632991433143616,
+      "wall_time_s": 1.81,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 2000.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "counts_2000"
+      }
+    },
+    "pc_error_0.005": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0004431009292602539,
+        "p05": -0.004232645034790039,
+        "fraction_negative": 0.4489795918367347
+      },
+      "median_best_ncc": 0.61419677734375,
+      "wall_time_s": 8.35,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.005,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "pc_error_0.005"
+      }
+    },
+    "pc_error_0.02": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0001188516616821289,
+        "p05": -0.003544524312019348,
+        "fraction_negative": 0.4744897959183674
+      },
+      "median_best_ncc": 0.6065535545349121,
+      "wall_time_s": 8.2,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.02,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "pc_error_0.02"
+      }
+    },
+    "binning_2": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0003617405891418457,
+        "p05": -0.004229679703712463,
+        "fraction_negative": 0.4642857142857143
+      },
+      "median_best_ncc": 0.6972966194152832,
+      "wall_time_s": 7.96,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 2,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "binning_2"
+      }
+    },
+    "step_3deg": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00020459294319152832,
+        "p05": -0.00400148332118988,
+        "fraction_negative": 0.4846938775510204
+      },
+      "median_best_ncc": 0.680067241191864,
+      "wall_time_s": 19.72,
+      "n_dictionary": [
+        30443,
+        30443
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 3.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "step_3deg"
+      }
+    },
+    "step_6deg": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00030362606048583984,
+        "p05": -0.00466715544462204,
+        "fraction_negative": 0.4642857142857143
+      },
+      "median_best_ncc": 0.5118581056594849,
+      "wall_time_s": 2.66,
+      "n_dictionary": [
+        3557,
+        3557
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 6.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "step_6deg"
+      }
+    },
+    "lattice_sweep_0.5%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+0.5%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+0.5%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+0.5%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 2.9072165489196777e-05,
+        "p05": -0.0011414065957069397,
+        "fraction_negative": 0.4744897959183674
+      },
+      "median_best_ncc": 0.6171749830245972,
+      "wall_time_s": 4.32,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+0.5%"
+        ],
+        "kind": "two_phase",
+        "name": "lattice_sweep_0.5%"
+      }
+    },
+    "lattice_sweep_2%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+2%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+2%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+2%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00010749697685241699,
+        "p05": -0.0031890422105789185,
+        "fraction_negative": 0.4897959183673469
+      },
+      "median_best_ncc": 0.6174728870391846,
+      "wall_time_s": 5.31,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "target",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+2%"
+        ],
+        "kind": "two_phase",
+        "name": "lattice_sweep_2%"
+      }
+    },
+    "matched_sweep_0.5%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+0.5%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+0.5%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+0.5%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0001716911792755127,
+        "p05": -0.000769101083278656,
+        "fraction_negative": 0.4030612244897959
+      },
+      "median_best_ncc": 0.7047196626663208,
+      "wall_time_s": 1.76,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+0.5%"
+        ],
+        "kind": "two_phase",
+        "name": "matched_sweep_0.5%"
+      }
+    },
+    "matched_sweep_1%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+1%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+1%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+1%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0001761913299560547,
+        "p05": -0.001284569501876831,
+        "fraction_negative": 0.3877551020408163
+      },
+      "median_best_ncc": 0.699447512626648,
+      "wall_time_s": 1.76,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+1%"
+        ],
+        "kind": "two_phase",
+        "name": "matched_sweep_1%"
+      }
+    },
+    "matched_sweep_2%": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Ni+2%"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Ni+2%",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Ni+2%": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.00046697258949279785,
+        "p05": -0.0032772719860076904,
+        "fraction_negative": 0.40816326530612246
+      },
+      "median_best_ncc": 0.7001844048500061,
+      "wall_time_s": 1.78,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Ni+2%"
+        ],
+        "kind": "two_phase",
+        "name": "matched_sweep_2%"
+      }
+    },
+    "matched_pc_error_0.005": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0011310279369354248,
+        "p05": -0.0027403980493545532,
+        "fraction_negative": 0.30612244897959184
+      },
+      "median_best_ncc": 0.7033389806747437,
+      "wall_time_s": 1.73,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.005,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_pc_error_0.005"
+      }
+    },
+    "matched_pc_error_0.01": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0010923445224761963,
+        "p05": -0.002682313323020935,
+        "fraction_negative": 0.33163265306122447
+      },
+      "median_best_ncc": 0.6972303986549377,
+      "wall_time_s": 1.72,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.01,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_pc_error_0.01"
+      }
+    },
+    "matched_pc_error_0.02": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0008173584938049316,
+        "p05": -0.002710193395614624,
+        "fraction_negative": 0.35714285714285715
+      },
+      "median_best_ncc": 0.6981576085090637,
+      "wall_time_s": 1.86,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.02,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_pc_error_0.02"
+      }
+    },
+    "matched_counts_50": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0008410811424255371,
+        "p05": -0.0024689286947250366,
+        "fraction_negative": 0.33163265306122447
+      },
+      "median_best_ncc": 0.4822823405265808,
+      "wall_time_s": 1.77,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 50.0,
+        "pc_error": 0.0,
+        "bin": 1,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_counts_50"
+      }
+    },
+    "matched_binning_2": {
+      "n": 196,
+      "confusion": {
+        "rows_true": [
+          "Ni",
+          "Cu"
+        ],
+        "cols_pred": [
+          "Ni",
+          "Cu",
+          "ambiguous",
+          "unindexed/other"
+        ],
+        "matrix": [
+          [
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            100,
+            0
+          ]
+        ]
+      },
+      "recall": {
+        "Ni": 0.0,
+        "Cu": 0.0
+      },
+      "coverage": 0.0,
+      "error_among_indexed": 0.0,
+      "ambiguous_fraction": 1.0,
+      "unindexed_fraction": 0.0,
+      "misorientation_deg": {
+        "median": null,
+        "p95": null
+      },
+      "signed_true_phase_margin": {
+        "median": 0.0009904205799102783,
+        "p05": -0.00229509174823761,
+        "fraction_negative": 0.29591836734693877
+      },
+      "median_best_ncc": 0.7890747785568237,
+      "wall_time_s": 1.62,
+      "n_dictionary": [
+        11935,
+        11935
+      ],
+      "condition": {
+        "counts": 400.0,
+        "pc_error": 0.0,
+        "bin": 2,
+        "res": 4.0,
+        "route": "dictionary",
+        "dict_route": "dictionary",
+        "phases": [
+          "Ni",
+          "Cu"
+        ],
+        "kind": "two_phase",
+        "name": "matched_binning_2"
+      }
+    }
+  }
+}
