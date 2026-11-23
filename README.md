@@ -23,6 +23,10 @@ Desktop workbench (PySide6) and headless CLI for **master-pattern-based EBSD dic
 * Phase decision with distinct *indexed / ambiguous / unindexed / low-signal / missing* labels and score margins
   (diagnostics, not probabilities); PNG maps, CSV, HDF5 and a versioned JSON manifest.
 * Guided GUI with worker threads, cancellation, pixel inspection (measured vs best simulated pattern per phase).
+* Ease of use: presets with a pre-launch RAM/time check, project files (`.kwbproj`), drag-to-select ROI,
+  one-click HTML/Markdown run reports, phase library and cache browser, geometry wizard (live band overlay),
+  resumable batch queue, vendor comparison with automatic frame detection, reader plug-ins (NORDIF, Bruker),
+  and a PyInstaller/Inno Setup installer recipe (Windows build pending).
 * Offline CPU demo and a synthetic Ni/Cu benchmark ([docs/benchmark_report.md](docs/benchmark_report.md)).
 
 ## Quick start

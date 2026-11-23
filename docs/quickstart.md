@@ -81,3 +81,12 @@ kwb index run.yaml --jobs kwb_jobs
 Read the `NOTE` lines printed at the end (PC approximation, kinematical masters, tilt or voltage mismatch,
 automatic backend fallback). The default decision thresholds are **provisional**; see the benchmark report for
 how thresholds are selected and frozen.
+
+## 5. Working faster
+
+* Pick a **preset** in step 5 (or `--preset`): *quick* for a first look, *phase study* when phases are similar.
+* **Drag a rectangle** on the map to choose an ROI; press *Estimate resources* before a full run.
+* **File → Save project** keeps scan, phases, geometry, settings and run history; reopen it later.
+* Step 4's **geometry wizard** draws band lines on the pattern while you adjust the PC.
+* **Tools → Batch queue** runs several projects overnight and resumes after an interruption.
+* Every run writes **report.html** into its job folder (results page → *Report*).

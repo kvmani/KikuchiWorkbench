@@ -31,6 +31,10 @@ including automatic changes). Re-running `kwb index config.json` reproduces a ru
 | `decision.min_signal` | none | signal metric below which a pixel is *low signal* |
 | `decision.provenance` | "provisional" | record where thresholds came from (e.g. frozen dev selection) |
 | `roi` | – | `[row0, row1, col0, col1]` half-open, for previews |
+| `preset` | – | `quick`, `standard` or `phase_study` (base settings; explicit keys override) |
+| `calibration` | – | `{enabled, phase, n_points, resolution_deg}` shared PC calibration |
+| `output.report` | `true` | write report.md/report.html after the run |
+| `output.compare_vendor`, `output.vendor_frame`, `output.vendor_phase_names` | `true`, `auto`, – | vendor comparison |
 | `allow_placeholder_geometry` | `false` | allow indexing without a calibrated PC (demos only) |
 
 ### Preprocessing steps
@@ -54,6 +58,12 @@ including automatic changes). Re-running `kwb index config.json` reproduces a ru
 | `kwb index CONFIG [--backend]` | indexing job |
 | `kwb demo [--two-phase]` | offline demo with self-check |
 | `kwb gui` / `kwb-gui` | desktop application |
+| `kwb index CONFIG --preset quick|standard|phase_study` · `kwb presets` | presets (config values override) |
+| `kwb project show|run FILE.kwbproj` | project files; runs are recorded in the project |
+| `kwb report JOB_DIR` | report.md + self-contained report.html in the job folder |
+| `kwb library list|add|remove|clean|usage` | phase library and cache browser |
+| `kwb batch add|run|status|retry QUEUE.json` | resumable batch queue |
+| `kwb readers` | built-in readers and plug-ins |
 
 ## Outputs
 

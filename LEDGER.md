@@ -365,3 +365,5 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   bundle builds (≈ 720 MB), frozen `kwb demo` passes in a clean environment, frozen GUI starts (offscreen). First
   build failed (`rsciio` import name of rosettasciio; plug-in metadata) — fixed in the spec. Windows build and
   signing remain open.
+- Docs updated for Phase 8 (README features, CLI/config table in docs/parameters.md, quick-start "Working
+  faster"). Phase 8 status: 8.1–8.9 done with tests; 8.10 prepared, Windows build pending. `pytest -q` → 132 passed.
