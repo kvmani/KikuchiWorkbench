@@ -354,3 +354,8 @@ version of the Ni/Cu benchmark once the reference Cu master exists.
   disorientation map to the job folder, adds a report section and a GUI "Vendor disorientation" map. Tests:
   frame detection (Rz90 recovered exactly), end-to-end job with report section.
   Limitation: Oxford `.ebsp` carries no vendor orientations; H5OINA/CTF comparison still to add with real exports.
+- 8.9 Reader plug-ins done: `io/plugins.py` registry (entry-point group `kikuchiworkbench.readers` +
+  `register_reader`), consulted after built-in detection so plug-ins cannot shadow Oxford/EDAX/EMsoft readers;
+  broken third-party plug-ins only warn. Built-ins: NORDIF (tested on kikuchipy's NORDIF sample; PC flagged
+  missing) and Bruker h5ebsd (via kikuchipy; unverified on real exports). `kwb readers`. Tests: NORDIF load,
+  custom plug-in registration, CLI.

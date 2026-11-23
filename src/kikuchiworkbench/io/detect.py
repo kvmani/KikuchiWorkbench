@@ -225,8 +225,13 @@ def detect_format(path: str | os.PathLike) -> FormatInfo:
         return _detect_up(p)
     if ext == ".ebsp":
         return _detect_ebsp(p)
+    from .plugins import find_reader
+
+    plugin = find_reader(p)
+    if plugin is not None:
+        return FormatInfo(plugin.name, plugin.vendor, None, notes=[f"read by plug-in: {plugin.description}"])
     raise UnsupportedFormatError(
         f"{p.name}: unrecognised file type.",
         "Supported scans: Oxford .h5oina/.ebsp, EDAX/TSL .h5/.oh5/.up1/.up2, EMsoft EBSD HDF5, "
-        "KikuchiWorkbench fixtures.",
+        "KikuchiWorkbench fixtures, plus reader plug-ins (`kwb readers`).",
     )

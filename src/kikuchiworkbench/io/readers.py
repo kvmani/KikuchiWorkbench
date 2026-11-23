@@ -549,7 +549,13 @@ def load_scan(
             sig = kp.load(p, lazy=lazy)
         scan = _from_signal(sig, info, p, None)
     else:
-        raise UnsupportedFormatError(f"{p.name}: format {fmt} is detected but not yet supported.")
+        from .plugins import get_reader
+
+        plugin = get_reader(fmt)
+        if plugin is None:
+            raise UnsupportedFormatError(f"{p.name}: format {fmt} is detected but not yet supported.")
+        scan = plugin.load(p, info, lazy=lazy)
+        scan.metadata.setdefault("reader_plugin", plugin.name)
     if nav_shape is not None and fmt not in ("edax_up1", "edax_up2"):
         nrows, ncols = (int(v) for v in nav_shape)
         if nrows * ncols != scan.n_points:

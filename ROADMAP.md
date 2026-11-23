@@ -110,7 +110,7 @@ Order chosen so later items reuse earlier ones (presets and project files feed t
   restart (queue file), per-item status. CLI `kwb batch QUEUE`, GUI queue panel.
 - [x] 8.8 (B8) **Comparison view** — vendor orientations/phases vs workbench: disorientation map, phase
   agreement/confusion table, exported in the report.
-- [ ] 8.9 (B10) **Reader plug-ins** — registry (Python entry points `kikuchiworkbench.readers`) so new formats plug
+- [x] 8.9 (B10) **Reader plug-ins** — registry (Python entry points `kikuchiworkbench.readers`) so new formats plug
   into detection and `load_scan`; first plug-ins: NORDIF and Bruker h5ebsd via kikuchipy.
 - [ ] 8.10 (B9) **Offline Windows installer** **[HW]** — PyInstaller spec + build script and docs prepared here;
   build and signing on Windows after the native EMsoft gate.

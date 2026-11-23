@@ -244,6 +244,15 @@ def cmd_report(a) -> int:
     return 0
 
 
+def cmd_readers(a) -> int:
+    from .io.plugins import readers
+
+    print("Built-in: oxford_h5oina, oxford_ebsp, edax_h5ebsd, edax_up1/up2, emsoft_ebsd, kwb_fixture, kikuchipy_h5ebsd")
+    for r in readers():
+        print(f"Plug-in: {r.name:14s} {r.vendor:14s} {r.description}")
+    return 0
+
+
 def cmd_presets(a) -> int:
     from .presets import PRESETS
 
@@ -417,6 +426,8 @@ def build_parser() -> argparse.ArgumentParser:
     rp = sub.add_parser("report", help="write report.md and report.html for a job folder")
     rp.add_argument("job")
     rp.set_defaults(fn=cmd_report)
+
+    sub.add_parser("readers", help="list scan readers and plug-ins").set_defaults(fn=cmd_readers)
 
     pr = sub.add_parser("presets", help="list indexing presets")
     pr.set_defaults(fn=cmd_presets)
