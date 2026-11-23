@@ -17,8 +17,8 @@ python -m venv .venv
 pip install -e ".[gui]"
 ```
 
-For an offline lab machine: on a connected machine run `pip download -d wheels ".[gui]"`, copy the `wheels`
-folder, then `pip install --no-index --find-links wheels ".[gui]"`. (A packaged Windows installer is planned
+For an offline lab machine: on a connected machine with the same OS and Python run `python tools/make_wheelhouse.py --out wheels` (records sha256 of every wheel), copy the `wheels`
+folder, then `pip install --no-index --find-links wheels "kikuchiworkbench[gui]"`. (A packaged Windows installer is planned
 after the native EMsoft workflow is validated.)
 
 ## 2. Run the bundled example (command line)

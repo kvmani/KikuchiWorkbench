@@ -256,3 +256,6 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   passed positionally to `log_event`). Untested path until now; added a test with varying PC. A warning is now
   issued when the PC spread exceeds 0.005 (configurable `matching.pc_spread_warning`) recommending a smaller ROI or
   region-specific dictionaries.
+- Offline install path verified (Linux): `tools/make_wheelhouse.py` built 70 wheels (199 MB, sha256 manifest, no
+  extras); a fresh venv installed them with `pip install --no-index` and `kwb demo` passed. Windows and the `gui`
+  extra still to be checked offline on the lab machine (docs/lab_handoff.md item 7).
