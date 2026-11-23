@@ -1,0 +1,34 @@
+{
+  "reference": {
+    "xpc": 20.0,
+    "ypc": 20.0,
+    "L": 15000.0,
+    "delta": 50.0,
+    "thetac": 10.0,
+    "numsx": 640,
+    "numsy": 480,
+    "binning": 1,
+    "emsoft_version": "4_2_0_0",
+    "euler_deg": [
+      120.00005798081759,
+      45.000018327712006,
+      60.00002216021962
+    ]
+  },
+  "master": "/home/user/venv/lib/python3.13/site-packages/kikuchipy/data/emsoft_ebsd_master_pattern/ni_mc_mp_20kv_uint8_gzip_opts9.h5",
+  "pc_bruker": [
+    0.53125,
+    0.4583333333333333,
+    0.625
+  ],
+  "ncc": {
+    "documented": 0.9468569755554199,
+    "wrong xpc sign (emsoft)": -0.010087091475725174,
+    "vertical mirror": -0.014329745434224606,
+    "horizontal mirror": -0.04117407277226448,
+    "phi1 + 90 deg (HKL vs TSL)": 0.08955957740545273,
+    "phi1 <-> phi2 swapped": 0.030290769413113594
+  },
+  "gap_to_best_wrong": 0.8572973981499672,
+  "passed": true
+}

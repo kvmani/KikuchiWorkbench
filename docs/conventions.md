@@ -65,3 +65,21 @@ indexing.
 | Beam voltage | kV |
 | Angles in exports and user input | degrees |
 | Lattice parameters | Å in user-facing input; nm where EMsoft requires it (converted explicitly) |
+
+## Validation against EMsoft's own detector projection
+
+`benchmarks/emsoft_projection_check.py` (also run as a test) projects an EMsoft Ni master through the workbench
+(master import → EMsoft 4/5 PC conversion → orix rotation from TSL Euler angles → kikuchipy projection) and compares
+with the pattern EMsoft 4.2 `EMEBSD` computed itself (`EBSD_TEST_Ni.h5`: 640 × 480 px, xpc = ypc = 20 px,
+L = 15000 µm, δ = 50 µm, detector tilt 10°, Euler (120°, 45°, 60°)).
+
+| Projection | NCC vs EMsoft (Zenodo 7498645 master) | NCC (kikuchipy small 8-bit master) |
+| --- | --- | --- |
+| documented conventions | **0.99996** | **0.947** |
+| wrong xpc sign (EMsoft 5 vs 4) | 0.001 | −0.010 |
+| vertical mirror | −0.011 | −0.014 |
+| horizontal mirror | −0.037 | −0.041 |
+| φ1 + 90° (HKL vs TSL Euler convention) | 0.077 | 0.090 |
+| φ1 ↔ φ2 swapped | 0.030 | 0.030 |
+
+Results: `benchmarks/results/emsoft_projection_2026-11-23/`.

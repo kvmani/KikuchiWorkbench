@@ -229,3 +229,12 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
 - Limitations: phase accuracy not measured (no reference); comparison with published Oxford results pending (not
   in the record); 9-point PC calibration repeatability ~0.01 between ROIs. EDAX/TSL real export still needed.
 - Next: Ni reference-master projection check (dynamical EMsoft vs kinematical), Windows/CUDA hand-off notes.
+
+## 2026-11-23 — Entry 13: Conventions validated against EMsoft's own detector projection
+
+- `benchmarks/emsoft_projection_check.py` + test: EMsoft 4.2 `EMEBSD` reference pattern (`EBSD_TEST_Ni.h5`,
+  640×480, off-centre PC xpc = ypc = 20 px, detector tilt 10°, Euler (120, 45, 60)°) reproduced through the
+  workbench path with NCC **0.99996** (Zenodo 7498645 Ni master) / 0.947 (kikuchipy small 8-bit master); xpc sign
+  error, mirrors, HKL/TSL φ1 offset and φ1↔φ2 swap all give |NCC| < 0.1. This is the reference-projection check
+  AGENTS.md asks for, applied to the import/projection side; the generation side still needs the native EMsoft run.
+- Next: Windows/CUDA/EDAX hand-off checklist for the lab; then remaining GUI items (geometry plane fit, hex display).

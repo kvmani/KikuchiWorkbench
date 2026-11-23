@@ -1,0 +1,34 @@
+{
+  "reference": {
+    "xpc": 20.0,
+    "ypc": 20.0,
+    "L": 15000.0,
+    "delta": 50.0,
+    "thetac": 10.0,
+    "numsx": 640,
+    "numsy": 480,
+    "binning": 1,
+    "emsoft_version": "4_2_0_0",
+    "euler_deg": [
+      120.00005798081759,
+      45.000018327712006,
+      60.00002216021962
+    ]
+  },
+  "master": "/home/user/kwb_data/ni_master/ni_mc_mp_20kv.h5",
+  "pc_bruker": [
+    0.53125,
+    0.4583333333333333,
+    0.625
+  ],
+  "ncc": {
+    "documented": 0.9999645948410034,
+    "wrong xpc sign (emsoft)": 0.001190435141324997,
+    "vertical mirror": -0.010713556781411171,
+    "horizontal mirror": -0.03673621639609337,
+    "phi1 + 90 deg (HKL vs TSL)": 0.07668239623308182,
+    "phi1 <-> phi2 swapped": 0.029605524614453316
+  },
+  "gap_to_best_wrong": 0.9232821986079216,
+  "passed": true
+}

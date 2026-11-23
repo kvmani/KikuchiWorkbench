@@ -60,3 +60,17 @@ def test_vectorised_and_convert():
 def test_unknown_convention():
     with pytest.raises(ValueError):
         to_bruker(PC, "nope", DetectorShape(10, 10))
+
+
+def test_matches_emsoft_detector_projection():
+    """Our master import + PC conversion + rotations reproduce EMsoft's EMEBSD pattern (asymmetric PC, tilt)."""
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        "epc", Path(__file__).parents[1] / "benchmarks" / "emsoft_projection_check.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    r = mod.run()  # offline: kikuchipy's small Ni master
+    assert r["passed"], r["ncc"]
+    assert r["ncc"]["documented"] > 0.9
