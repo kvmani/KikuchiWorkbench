@@ -143,3 +143,27 @@ def test_cancel_from_other_thread(tmp_path, ni):
     t.join()
     with pytest.raises(JobCancelled):
         job.run(lambda j: run_indexing(_cfg([path]), job=j, scan=scan, masters=[m]))
+
+
+def test_dictionary_cache_hit_gives_identical_results(tmp_path, ni):
+    path, m = ni
+    scan, _ = make_synthetic_scan([m], SyntheticSpec(nrows=2, ncols=3, seed=3))
+    mc = {"cache_dictionary": True, "cache_dir": str(tmp_path / "cache"), "dictionary_chunk": 700}
+    r1 = run_indexing(_cfg([path], matching=mc), scan=scan, masters=[m], export=False)
+    r2 = run_indexing(_cfg([path], matching=mc), scan=scan, masters=[m], export=False)
+    r0 = run_indexing(_cfg([path]), scan=scan, masters=[m], export=False)
+    msgs = [e["message"] for e in r1.manifest.events + r2.manifest.events if e["kind"] == "dictionary_cache"]
+    assert "miss" in msgs[0] and "hit" in msgs[1]
+    np.testing.assert_array_equal(r1.topk_index[0], r2.topk_index[0])
+    np.testing.assert_array_equal(r0.topk_index[0], r1.topk_index[0])
+    np.testing.assert_allclose(r0.topk_scores[0], r1.topk_scores[0], atol=1e-6)
+    # a different detector must not reuse the cached dictionary
+    from dataclasses import replace
+
+    from kikuchiworkbench.io.readers import _detector
+
+    d = scan.detector
+    moved = replace(scan, detector=_detector(shape=d.shape, pc=[0.45, 0.25, 0.5], binning=d.binning,
+                                             px_size=d.px_size, sample_tilt=d.sample_tilt))
+    r3 = run_indexing(_cfg([path], matching=mc), scan=moved, masters=[m], export=False)
+    assert any("miss" in e["message"] for e in r3.manifest.events if e["kind"] == "dictionary_cache")

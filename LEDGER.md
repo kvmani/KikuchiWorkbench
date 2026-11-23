@@ -131,3 +131,14 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   cancel mid-run → no result) pass. `pytest -q` → 101 passed. Linux container needed `libegl1` etc.; CI installs them.
 - Not verified: Windows GUI launch (6.8, needs Windows runner/workstation — CI windows job will be the first check).
 - Next: check CI results; benchmark scripts for the controlled cubic study (5.2–5.5); quick start docs.
+
+## 2026-11-23 — Entry 7: Dictionary cache; first CI results
+
+- CI run 2 (commit f297278): Linux 3.11/3.12 passed; Windows 3.11/3.12 98/99 passed — including the mock EMsoft
+  subprocess chain, so argument-list process launch and job folders work on Windows runners. The one failure was a
+  test bug (JSON-escaped backslashes); fixed in 09cd742. CI now triggers on `main` only (avoids duplicate runs).
+- Dictionary cache (`matching.cache_dictionary: true`): normalised float32 dictionary as `.npy` per phase, key =
+  master checksum + energy selection, detector, sampling, shared preprocessing key and mask, kikuchipy version;
+  verified (shape, finite, unit norm) before promotion; read back as memmap. Test: cache hit gives identical top-k
+  to the uncached path; a different PC misses. `pytest tests/test_pipeline.py` → 9 passed.
+- Next: controlled cubic benchmark script (dev/held-out split, frozen thresholds, stress conditions).

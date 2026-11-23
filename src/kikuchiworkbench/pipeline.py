@@ -17,10 +17,17 @@ from pathlib import Path
 import numpy as np
 
 from . import __version__
+from .cache import make_key
 from .errors import MissingMetadataError, WorkbenchError
 from .export import export_csv, export_h5, export_maps
 from .indexing.decision import DecisionPolicy, PhaseDecision, decide
-from .indexing.dictionary import DictionaryProjector, detector_key_fields, single_pc_detector
+from .indexing.dictionary import (
+    DictionaryProjector,
+    detector_key_fields,
+    dictionary_cache_fields,
+    get_or_build_dictionary,
+    single_pc_detector,
+)
 from .indexing.matching import Matcher, TopK, normalize, select_backend
 from .indexing.preprocessing import DEFAULT_PIPELINE, Preprocessor, signal_metric
 from .indexing.sampling import SamplingSpec, estimate_count, estimate_resources, sample_orientations
@@ -350,20 +357,44 @@ def run_indexing(
     topks = []
     t0 = time.perf_counter()
     t_proj = 0.0
+    cache = None
+    if mcfg.get("cache_dictionary"):
+        from .cache import ArtifactCache
+
+        cache = ArtifactCache(mcfg.get("cache_dir"))
+    chunk_d = int(mcfg["dictionary_chunk"])
     for ph_i, (m, rot) in enumerate(zip(masters, rotations, strict=True)):
         tk = TopK(n, k)
         projector = DictionaryProjector(m.signal, proj_det, pre)
-        chunk_d = int(mcfg["dictionary_chunk"])
-        for c0 in range(0, rot.size, chunk_d):
+        if cache is not None:
+            fields = dictionary_cache_fields(m.describe(), proj_det, spec.to_dict(), pre, rot.size)
+            tp = time.perf_counter()
+            full, hit = get_or_build_dictionary(
+                cache, projector, rot, fields, chunk_d,
+                progress=lambda f, ph_i=ph_i: progress(0.1 + 0.4 * (ph_i + f) / len(masters),
+                                                      f"{names[ph_i]}: building dictionary"),
+                cancel=job.cancel_token if job is not None else None)
+            t_proj += time.perf_counter() - tp
+            events("dictionary_cache", f"{names[ph_i]}: dictionary cache {'hit' if hit else 'miss (built)'}",
+                   key=make_key(fields))
+            blocks = ((c0, np.asarray(full[c0:c0 + chunk_d])) for c0 in range(0, rot.size, chunk_d))
+        else:
+            blocks = None
+        c0 = 0
+        while c0 < rot.size:
             if job is not None:
                 job.cancel_token.raise_if_cancelled()
             tp = time.perf_counter()
-            dic = projector.project(rot[c0:c0 + chunk_d])
+            if blocks is not None:
+                c0, dic = next(blocks)
+            else:
+                dic = projector.project(rot[c0:c0 + chunk_d])
             t_proj += time.perf_counter() - tp
             matcher.match_block(exp, dic, tk, 0, c0)
             done += dic.shape[0]
             progress(0.1 + 0.85 * done / total, f"{names[ph_i]}: matched {c0 + dic.shape[0]}/{rot.size} "
                      "dictionary patterns")
+            c0 += dic.shape[0]
         topks.append(tk)
     timings["projection_s"] = t_proj
     timings["matching_s"] = time.perf_counter() - t0 - t_proj

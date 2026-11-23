@@ -53,7 +53,7 @@ until evidence from a suitable machine is recorded.
 - [~] 4.1 Detector geometry service: import vendor PC, binning, crop; simulated vs experimental preview/residual.
 - [x] 4.2 Preprocessing pipeline (background removal, normalisation, masks) recorded and reproducible; raw data never modified.
 - [x] 4.3 Symmetry-reduced orientation sampling (orix) with resource estimate (orientations, RAM, disk).
-- [~] 4.4 Bounded-batch dictionary projection per phase (kikuchipy), cache key including detector, grid, preprocessing.
+- [x] 4.4 Bounded-batch dictionary projection per phase (kikuchipy), cache key including detector, grid, preprocessing.
 - [x] 4.5 CPU NCC matcher (NumPy/BLAS), chunked, top-k per phase, deterministic tie policy.
 - [x] 4.6 Phase decision: best score per phase, runner-up, margin, unindexed (low score) and ambiguous (small margin) kept distinct.
 - [x] 4.7 Exports: PNG maps (phase, IPF, score, margin, ambiguity), CSV table, manifest.

@@ -65,3 +65,64 @@ class DictionaryProjector:
         for i0 in range(0, n, chunk_size):
             i1 = min(n, i0 + chunk_size)
             yield i0, self.project(rotations[i0:i1])
+
+
+DICTIONARY_KIND = "dictionaries"
+
+
+def dictionary_cache_fields(master_desc: dict, detector, sampling: dict, preprocessor, n: int) -> dict:
+    """Cache key: master (checksum, energy selection), detector, sampling grid, shared preprocessing."""
+    import kikuchipy
+
+    return {
+        "master": {k: master_desc.get(k) for k in ("sha256", "energy_mode", "energy_keV", "energy_weights")},
+        "detector": detector_key_fields(detector),
+        "sampling": sampling,
+        "n_orientations": int(n),
+        "preprocessing_shared_key": preprocessor.key(),
+        "mask_pixels": int(preprocessor.mask().sum()),
+        "projection": {"engine": "kikuchipy", "version": kikuchipy.__version__, "normalised": True,
+                       "dtype": "float32"},
+    }
+
+
+def get_or_build_dictionary(cache, projector: DictionaryProjector, rotations, fields: dict,
+                            chunk_size: int, progress=None, cancel=None) -> tuple[np.ndarray, bool]:
+    """Return a read-only memmap of the normalised dictionary (n, p) and whether it was a cache hit.
+
+    Built dictionaries are verified (shape, finite, unit norm) before promotion;
+    a cancelled or failed build leaves nothing in the cache.
+    """
+    hit = cache.get(DICTIONARY_KIND, fields)
+    if hit is not None:
+        return np.load(hit / "dictionary.npy", mmap_mode="r"), True
+    n = rotations.size
+    p = int(projector.preprocessor.mask().sum())
+    with cache.stage() as st:
+        arr = np.lib.format.open_memmap(st / "dictionary.npy", mode="w+", dtype=np.float32, shape=(n, p))
+        for c0 in range(0, n, chunk_size):
+            if cancel is not None:
+                cancel.raise_if_cancelled()
+            arr[c0:c0 + chunk_size] = projector.project(rotations[c0:c0 + chunk_size])
+            if progress is not None:
+                progress(min(n, c0 + chunk_size) / n)
+        arr.flush()
+        del arr
+        np.save(st / "quaternions.npy", rotations.data)
+
+        def verify(d):
+            a = np.load(d / "dictionary.npy", mmap_mode="r")
+            if a.shape != (n, p):
+                raise RuntimeError(f"dictionary shape {a.shape} != {(n, p)}")
+            norms = []
+            for c0 in range(0, n, 8192):
+                blk = np.asarray(a[c0:c0 + 8192])
+                if not np.all(np.isfinite(blk)):
+                    raise RuntimeError("non-finite dictionary values")
+                norms.append(np.linalg.norm(blk, axis=1))
+            nn = np.concatenate(norms)
+            bad = int(np.count_nonzero(np.abs(nn - 1) > 1e-3))
+            return {"shape": [n, p], "non_unit_norm_rows": bad}
+
+        entry = cache.promote(st, DICTIONARY_KIND, fields, verify)
+    return np.load(entry / "dictionary.npy", mmap_mode="r"), False
