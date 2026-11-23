@@ -58,6 +58,7 @@ class IndexingConfig:
     decision: dict = field(default_factory=dict)
     output: dict = field(default_factory=dict)
     refinement: dict = field(default_factory=dict)  # {"enabled": bool, **RefinementBudget}
+    calibration: dict = field(default_factory=dict)  # {"enabled": bool, "phase": int, "n_points": int, ...}
     roi: list | None = None  # [row0, row1, col0, col1] (half-open) on the map grid
     allow_placeholder_geometry: bool = False
 
@@ -315,6 +316,21 @@ def run_indexing(
         events("warning", "Competing kinematical masters include different reflector families "
                f"{fams}; phase scores can differ because of the reflector cutoff rather than physics. "
                "Regenerate with the same max_hkl_sq.")
+
+    # ---- optional shared PC calibration (one geometry for all phases)
+    ccfg = dict(config.calibration or {})
+    if ccfg.pop("enabled", False):
+        from .indexing.calibration import apply_calibration, calibrate_pc
+
+        ref_phase = int(ccfg.pop("phase", 0))
+        pre_c = Preprocessor(list(config.preprocessing), work_scan.pattern_shape).fit(work_scan)
+        progress(0.03, f"Calibrating PC with {names[ref_phase]}")
+        cal = calibrate_pc(work_scan, masters[ref_phase], pre_c, **ccfg)
+        work_scan = apply_calibration(work_scan, cal)
+        manifest.parameters["pc_calibration"] = {k: v for k, v in cal.items() if k != "detector"}
+        events("pc_calibration", f"PC calibrated on {cal['n_used']} points with {cal['reference_phase']}: "
+               f"{[round(v, 4) for v in cal['pc_bruker']]} (start {[round(v, 4) for v in cal['pc_bruker_start']]}, "
+               f"spread {[round(v, 4) for v in cal['pc_spread_std']]}); shared by all phases")
 
     # ---- geometry and preprocessing
     det_raw, spread = single_pc_detector(work_scan.detector)

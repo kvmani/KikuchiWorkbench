@@ -202,3 +202,14 @@ Append-only log of work done against [ROADMAP.md](ROADMAP.md). Each entry record
   CLI, outputs), `docs/troubleshooting.md`.
 - Next: when data arrive — real Oxford `.ebsp` load-to-export check on an ROI with EMsoft Al/Si masters (5.7),
   and Ni reference-master projection comparison (dynamical vs kinematical).
+
+## 2026-11-23 — Entry 11: Shared PC calibration
+
+- `indexing/calibration.py`: choose high-signal points spread over the map, index them with a reference phase,
+  refine orientation (stage 1) then orientation + PC jointly (stage 2, kikuchipy), iterate 3× from the median PC;
+  the median PC is applied to the scan (`geometry_source = calibrated`) and shared by **all** phases; per-point PC,
+  spread, history and scores recorded in `parameters.pc_calibration`. Config: `calibration: {enabled: true,
+  phase: 0, n_points: 16}`.
+- Evidence: synthetic Ni scan with PC offset (+0.015, 0, +0.015): calibrated PC within 0.004 of truth using 6
+  points from a 6° grid (single-stage joint refinement only reached 0.013). `pytest -q` → 109 passed.
+- Al–Si public dataset downloaded and md5-verified (Zenodo 20290635); Ni reference master download in progress.

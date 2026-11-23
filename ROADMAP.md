@@ -50,7 +50,7 @@ until evidence from a suitable machine is recorded.
 
 ## Phase 4 — Headless scientific workflow (milestone 2)
 
-- [~] 4.1 Detector geometry service: import vendor PC, binning, crop; simulated vs experimental preview/residual.
+- [x] 4.1 Detector geometry service: import vendor PC, binning, crop; simulated vs experimental preview/residual.
 - [x] 4.2 Preprocessing pipeline (background removal, normalisation, masks) recorded and reproducible; raw data never modified.
 - [x] 4.3 Symmetry-reduced orientation sampling (orix) with resource estimate (orientations, RAM, disk).
 - [x] 4.4 Bounded-batch dictionary projection per phase (kikuchipy), cache key including detector, grid, preprocessing.

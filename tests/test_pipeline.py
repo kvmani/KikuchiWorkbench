@@ -185,3 +185,19 @@ def test_equal_budget_refinement(ni, tmp_path):
     assert np.all(r.per_phase_best[:, 0] > r.dictionary_best[:, 0])
     # identical phases with identical budgets stay exactly tied -> ambiguous
     assert np.all(r.decision.tie)
+
+
+def test_shared_pc_calibration(ni):
+    path, m = ni
+    from kikuchiworkbench.benchmark import _shift_pc
+
+    scan, _ = make_synthetic_scan([m], SyntheticSpec(nrows=3, ncols=4, seed=31))
+    true_pc = np.asarray(scan.detector.pc_average).ravel()
+    bad = _shift_pc(scan, 0.015)
+    r = run_indexing(_cfg([path], calibration={"enabled": True, "n_points": 6, "resolution_deg": RES}),
+                     scan=bad, masters=[m], export=False)
+    cal = r.manifest.parameters["pc_calibration"]
+    assert np.max(np.abs(np.array(cal["pc_bruker"]) - true_pc)) < 0.004
+    assert len(cal["points"]) <= 6
+    assert r.context["scan"].geometry_source == "calibrated"
+    assert any(e["kind"] == "pc_calibration" for e in r.manifest.events)
